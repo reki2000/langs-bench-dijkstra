@@ -1,0 +1,4 @@
+go/pkg
+cython/src/build
+cython/src/*.c
+go/bin
