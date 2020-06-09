@@ -3,8 +3,5 @@ all: main
 clean:
 	rm main
 
-main: src/main.go
-	go build src/main.go
-
-run: main
-	./main ${N} ${COUNT}
+main: src/main.go src/priorityqueue.go
+	go build src/main.go src/priorityqueue.go

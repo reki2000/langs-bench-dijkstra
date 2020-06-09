@@ -1,10 +1,7 @@
 #!/bin/bash
 
 function bench {
-  export N=40
-  for count in 1 5; do
-    hyperfine --warmup 1 "COUNT=$count make run"
-  done
+  hyperfine --warmup 1 "./bench.sh 20 < ../data/Tokyo_Edgelist.csv"
 }
 
 function measure {
