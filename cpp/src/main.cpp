@@ -55,7 +55,7 @@ void load() {
     }
     //cout << "read:" << data[2] << "," << data[3] << "," << data[5] << endl;
 
-    add_edge(stoi(data[2]), stoi(data[3]), (int)(stof(data[5]) * 100));
+    add_edge(stoi(data[2]), stoi(data[3]), (int)(stof(data[5]) * 1000));
   }
 }
 
@@ -65,14 +65,14 @@ pair<Distance, vector<NodeId>> dijkstra(NodeId start, NodeId end) {
   NodeIndex s = get_idx(start);
   NodeIndex e = get_idx(end);
 
-  int size = g.id2idx.size();
+  int size = g.idx;
   Distance d[size] = {};
   NodeIndex prev[size] = {};
 
   priority_queue<Visit, vector<Visit>, greater<Visit>> queue;
   queue.push({0,s});
 
-  // int visited = 0;
+  int visited = 0;
   while (!queue.empty()) {
     auto a = queue.top();
     queue.pop();
@@ -82,10 +82,7 @@ pair<Distance, vector<NodeId>> dijkstra(NodeId start, NodeId end) {
       cerr << "assert" << endl;
       exit(1);
     }
-    // visited++;
-    // if (visited % 10000 == 0) {
-    //   cerr << "visiting " << visited << " nodes" << endl;
-    // }
+    visited++;
     for (Edge e : g.edge[here]) {
       NodeIndex to = e.first;
       Distance w = distance + e.second;
@@ -97,7 +94,7 @@ pair<Distance, vector<NodeId>> dijkstra(NodeId start, NodeId end) {
     }
   }
 
-  //cerr << "visited:" << visited << endl;
+  cerr << "visited: " << visited << endl;
 
   vector<NodeId> result;
   NodeIndex n = e;
@@ -114,6 +111,7 @@ pair<Distance, vector<NodeId>> dijkstra(NodeId start, NodeId end) {
 
 int main(int argc, char **argv) {
   load();
+  cerr << "loaded nodes: " << g.idx << endl;
 
   int count = atoi(argv[1]);
 
@@ -121,10 +119,10 @@ int main(int argc, char **argv) {
   for (int i=0; i<count; i++) {
     NodeId s = g.idx2id[(i+1) * 1000];
     result = dijkstra(s, g.idx2id[1]);
-    cout << "distance:" << result.first << endl;
+    cout << "distance: " << result.first << endl;
   }
 
-  cout << "route:";
+  cout << "route: ";
   for (NodeId id: result.second) {
     cout << id << " ";
   }

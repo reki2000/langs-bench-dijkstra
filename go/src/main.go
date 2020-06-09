@@ -60,7 +60,7 @@ func load() {
 		s, _ := strconv.Atoi(line[2])
 		e, _ := strconv.Atoi(line[3])
 		d, _ := strconv.ParseFloat(line[5], 32)
-		add_edge(NodeId(s), NodeId(e), Distance(d*100))
+		add_edge(NodeId(s), NodeId(e), Distance(d*1000))
 	}
 }
 
@@ -73,15 +73,17 @@ func dijkstra(start NodeId, end NodeId) (Distance, []NodeId) {
 	s := get_idx(start)
 	e := get_idx(end)
 
-	size := len(g.id2idx) + 1
+	size := g.idx
 	d := make([]Distance, size)
 	prev := make([]NodeIndex, size)
 
 	queue := NewPriorityQueue()
 	queue.Push(Visit{0, s})
 
+	visited := 0
 	for !queue.Empty() {
 		a := queue.Pop()
+		visited++
 		distance := a.first
 		here := a.second
 		//fmt.Println("visiting:", here, " distance:", distance)
@@ -95,6 +97,7 @@ func dijkstra(start NodeId, end NodeId) (Distance, []NodeId) {
 			}
 		}
 	}
+	fmt.Println("visited:", visited)
 
 	n := e
 	result := []NodeId{g.idx2id[n]}
@@ -111,7 +114,7 @@ func main() {
 	count, _ := strconv.Atoi(os.Args[1])
 
 	load()
-	//fmt.Println("loaded nodes:", g.idx)
+	fmt.Println("loaded nodes:", g.idx)
 
 	var distance Distance
 	var route []NodeId
@@ -121,7 +124,7 @@ func main() {
 		fmt.Println("distance:", distance)
 	}
 
-	fmt.Print("route:")
+	fmt.Print("route: ")
 	for _, id := range route {
 		fmt.Print(id, " ")
 	}
