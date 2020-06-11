@@ -1,3 +1,3 @@
 #!/bin/bash
 
-./main "$@"
+python src/main.py "$@"

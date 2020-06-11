@@ -1,4 +1,5 @@
 {
     "go.autocompleteUnimportedPackages": true,
-    "go.formatTool": "gofmt"
+    "go.formatTool": "gofmt",
+    "python.pythonPath": "/home/reki/.asdf/installs/python/3.8.2/bin/python3"
 }
