@@ -1,10 +1,1 @@
-go/pkg
-cython/src/build
-cython/src/*.c
-javascript/node_modules
-go/bin
-go/main
-rust/main
-cpp/main
-kotlin/main.jar
 data

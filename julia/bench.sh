@@ -1,3 +1,3 @@
 #!/bin/bash
 
-./main "$@"
+julia src/main.jl "$@"

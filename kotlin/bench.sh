@@ -1,3 +1,3 @@
 #!/bin/bash
 
-./main "$@"
+java -jar main.jar "$@"
