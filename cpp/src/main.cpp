@@ -78,10 +78,10 @@ pair<Distance, vector<NodeId>> dijkstra(NodeId start, NodeId end) {
     queue.pop();
     Distance distance = a.first;
     NodeIndex here = a.second;
-    if (distance <= 0 && here != s) {
-      cerr << "assert" << endl;
-      exit(1);
-    }
+    // if (distance <= 0 && here != s) {
+    //   cerr << "assert" << endl;
+    //   exit(1);
+    // }
     visited++;
     for (Edge e : g.edge[here]) {
       NodeIndex to = e.first;

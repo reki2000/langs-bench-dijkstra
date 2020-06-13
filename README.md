@@ -20,7 +20,6 @@ while read lang plugin version dummy; do
   asdf plugin add $plugin
   asdf install $plugin $version
   [ "$lang" != "-" ] && (cd $lang; asdf local $plugin $version)
-  popd 
 done <<EOT
 go golang 1.14.2
 python python 3.8.2
@@ -30,10 +29,12 @@ rust rust 1.44.0
 julia julia 1.4.1
 javascript nodejs 13.13.0
 EOT
+asdf reshim
 ```
 
 Also you need to get the Tokyo's road network data from [Urban Road Network Data](https://figshare.com/articles/Urban_Road_Network_Data/2061897)
 ```
+mkdir data
 curl https://ndownloader.figshare.com/files/3663336 > data/tokyo.zip
 pushd data
 unzip tokyo.zip
