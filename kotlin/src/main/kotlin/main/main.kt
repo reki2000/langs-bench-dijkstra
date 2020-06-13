@@ -17,11 +17,10 @@ val g = G()
 
 fun get_idx(id:NodeId): NodeIndex {
 	return g.id2idx.getOrElse(id, {
-		val i = g.idx
+		val i = g.idx++
 		g.id2idx[id] = i
 		g.idx2id.add(id) 
 		g.edge.add(mutableListOf<Edge>())
-		g.idx++
 		return i
 	})
 }
@@ -60,20 +59,16 @@ fun dijkstra(start:NodeId, end:NodeId):Result {
 	val d = Array<Distance>(size) { 0 }
 	val prev = Array<NodeIndex>(size) { 0 }
 
-	//val isPrior: (Visit, Visit)->Boolean = {a, b -> a.first < b.first}
-	val queue = PriorityQueue<Visit>({a, b -> a.first < b.first})
+	val queue = PriorityQueue()
 	queue.push(Visit(0, s))
 
 	var visited = 0
 	while (!queue.empty()) {
-		val a = queue.pop()
+		val (distance, here) = queue.pop()
 		visited++
-		val distance = a.first
-		val here = a.second
 		//println("visiting:" + here + " distance:" + distance + " q:" + queue.tree.size)
-		for (edge in g.edge[here]) {
-			val to = edge.first
-			val w = distance + edge.second
+		for ((to, weight) in g.edge[here]) {
+			val w = distance + weight
 			if (d[to] == 0 || w < d[to]) {
 				prev[to] = here
 				d[to] = w
