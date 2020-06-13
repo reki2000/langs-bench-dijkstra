@@ -8,7 +8,7 @@ function measure {
   local lang=$1
   echo "Testing $lang..."
   pushd $lang > /dev/null
-  make clean > /dev/null && make > /dev/null
+  make -i clean > /dev/null && make > /dev/null
   bench
   popd > /dev/null
 }
