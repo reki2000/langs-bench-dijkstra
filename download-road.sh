@@ -5,6 +5,6 @@ pushd data
 unzip tokyo.zip
 popd
 
-Tokyo_EdgeList.csv
-
+# Tokyo_EdgeList.csv
+# 
 # XCoord,YCoord,START_NODE,END_NODE,EDGE,LENGTH

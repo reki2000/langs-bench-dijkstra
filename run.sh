@@ -17,7 +17,7 @@ set -e
 if [ -n "$1" ]; then
   measure $1
 else 
-  for lang in cpp go rust javascript julia kotlin; do
+  for lang in cpp go rust javascript julia kotlin python; do
     measure $lang
   done
 fi
