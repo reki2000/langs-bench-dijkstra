@@ -110,6 +110,9 @@ pair<Distance, vector<NodeId>> dijkstra(NodeId start, NodeId end) {
 }
 
 int main(int argc, char **argv) {
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr);
+
   load();
   cerr << "loaded nodes: " << g.idx << endl;
 
