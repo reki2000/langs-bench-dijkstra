@@ -8,23 +8,18 @@ using Edge = pair<NodeIndex, Distance>;
 
 struct G {
   map<NodeId,NodeIndex> id2idx;
-  vector<NodeId> idx2id;
+  vector<NodeId> idx2id = {0};
   NodeIndex idx = 1;
-  vector<vector<Edge>> edge;
+  vector<vector<Edge>> edge = {vector<Edge>()};
 } g;
 
 NodeIndex get_idx(NodeId id) {
   NodeIndex i = g.id2idx[id];
   if (i == 0) {
     i = g.idx++;
-    if (i >= g.edge.capacity()) {
-      g.edge.resize(i*2);
-    }
-    if (i >= g.idx2id.capacity()) {
-      g.idx2id.resize(i*2);
-    }
     g.id2idx[id] = i;
-    g.idx2id[i] = id;
+    g.idx2id.push_back(id);
+    g.edge.push_back(vector<Edge>());
   }
   return i;
 }
