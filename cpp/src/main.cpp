@@ -32,25 +32,30 @@ void add_edge(NodeId start, NodeId end, Distance distance) {
 
 void load() {
   string line;
-  getline(cin, line); // skip header
+  cin >> line; // skip header
 
   while (true) {
-    getline(cin, line);
+    cin >> line;
     if (cin.eof()) {
       break;
     }
-    stringstream l(line);
-    string s;
-    vector<string> data;
-    while (getline(l, s, ',')) {
-      data.push_back(s);
+    int s = 0, e = 0;
+    float d = 0;
+    for (int idx=0, pos=0, prev_pos=0; pos < line.length(); pos++) {
+      if (line[pos] == ',' || pos == line.length() - 1) {
+        auto field = line.substr(prev_pos, pos-prev_pos);
+        switch (idx) {
+          case 2: s = stoi(field); break;
+          case 3: e = stoi(field); break;
+          case 5: d = stof(field); break;
+        }
+        prev_pos = pos+1;
+        idx++;
+      }
     }
-    if (!l && s.empty()) {
-      data.push_back("");
-    }
-    //cout << "read:" << data[2] << "," << data[3] << "," << data[5] << endl;
-
-    add_edge(stoi(data[2]), stoi(data[3]), (int)(stof(data[5]) * 1000));
+    // cerr << "line:" << line << "s:" << s << " e:" << e << " d:" << d << endl;
+    // std::this_thread::sleep_for(std::chrono::seconds(1));
+    add_edge(s, e, (int)(d * 1000));
   }
 }
 
