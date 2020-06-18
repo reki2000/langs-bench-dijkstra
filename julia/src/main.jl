@@ -1,7 +1,7 @@
 import Base.push!
+#using Profile
 
 include("priorityqueue.jl")
-
 
 mutable struct Edge
 	first::NodeIndex
@@ -120,3 +120,6 @@ function main()
 end
 
 main()
+
+# @profile main()
+# Profile.print()
