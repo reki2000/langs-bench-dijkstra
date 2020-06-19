@@ -6,6 +6,8 @@ using NodeIndex = int;
 using Distance = int;
 using Edge = pair<NodeIndex, Distance>;
 
+const int DISTANCE_MULTIPLE = 100;
+
 struct G {
   map<NodeId,NodeIndex> id2idx;
   vector<NodeId> idx2id = {0};
@@ -30,6 +32,28 @@ void add_edge(NodeId start, NodeId end, Distance distance) {
   g.edge[s].push_back({e, distance});
 }
 
+// 123.4567 --> 12345
+int stof100(const char *s) {
+  int result = 0;
+  int place = 0;
+  while (*s != '\0') {
+    if (*s == '.') {
+      place = 1;
+    } else {
+      result *= 10;
+      result += *s - '0';
+      if (place > 0) {
+        place++;
+        if (place >= 3) {
+            break;
+        }
+      }
+    }
+    s++;
+  }
+  return result;
+}
+
 void load() {
   string line;
   cin >> line; // skip header
@@ -41,21 +65,22 @@ void load() {
     }
     int s = 0, e = 0;
     float d = 0;
-    for (int idx=0, pos=0, prev_pos=0; pos < line.length(); pos++) {
-      if (line[pos] == ',' || pos == line.length() - 1) {
+    for (int idx=0, pos=0, prev_pos=0; pos <= line.length(); pos++) {
+      if (line[pos] == ',' || pos == line.length()) {
         auto field = line.substr(prev_pos, pos-prev_pos);
         switch (idx) {
           case 2: s = stoi(field); break;
           case 3: e = stoi(field); break;
-          case 5: d = stof(field); break;
+          case 5: d = stof100(field.c_str()); break;
         }
         prev_pos = pos+1;
         idx++;
       }
     }
+    //cout << "line: " << line << " s: " << s << " e: " << e << " D: " << (int)(d) << endl;
     // cerr << "line:" << line << "s:" << s << " e:" << e << " d:" << d << endl;
     // std::this_thread::sleep_for(std::chrono::seconds(1));
-    add_edge(s, e, (int)(d * 1000));
+    add_edge(s, e, (int)d);
   }
 }
 
@@ -78,10 +103,7 @@ pair<Distance, vector<NodeId>> dijkstra(NodeId start, NodeId end) {
     queue.pop();
     Distance distance = a.first;
     NodeIndex here = a.second;
-    // if (distance <= 0 && here != s) {
-    //   cerr << "assert" << endl;
-    //   exit(1);
-    // }
+    //cout << "visiting: " << here << " distance: " << distance << endl;
     visited++;
     for (Edge e : g.edge[here]) {
       NodeIndex to = e.first;
@@ -105,7 +127,7 @@ pair<Distance, vector<NodeId>> dijkstra(NodeId start, NodeId end) {
     result.push_back(g.idx2id[n]);
   }
 
-  return {d[e] / 1000, result};
+  return {d[e] / DISTANCE_MULTIPLE, result};
 
 }
 

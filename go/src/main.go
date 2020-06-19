@@ -23,6 +23,8 @@ type G struct {
 	edge   [][]Edge
 }
 
+const DISTANCE_MULTIPLE = 100
+
 func NewGraph() G {
 	g := G{map[NodeId]NodeIndex{}, []NodeId{0}, 1, [][]Edge{nil}}
 	return g
@@ -48,6 +50,26 @@ func add_edge(start NodeId, end NodeId, distance Distance) {
 	g.edge[s] = append(g.edge[s], Edge{e, distance})
 }
 
+func stof100(s string) int {
+	result := 0
+	place := 0
+	for _, ch := range s {
+		if ch == '.' {
+			place = 1
+		} else {
+			result *= 10
+			result += int(ch) - int('0')
+			if place > 0 {
+				place++
+				if place >= 3 {
+					break
+				}
+			}
+		}
+	}
+	return result
+}
+
 func load() {
 	reader := csv.NewReader(os.Stdin)
 	line, err := reader.Read() // skip header
@@ -59,8 +81,9 @@ func load() {
 		}
 		s, _ := strconv.Atoi(line[2])
 		e, _ := strconv.Atoi(line[3])
-		d, _ := strconv.ParseFloat(line[5], 32)
-		add_edge(NodeId(s), NodeId(e), Distance(d*1000))
+		d := stof100(line[5])
+		add_edge(NodeId(s), NodeId(e), Distance(d))
+		// fmt.Println("line:", strings.Join(line, ","), "s:", s, "e:", e, "D:", Distance(d))
 	}
 }
 
@@ -83,10 +106,10 @@ func dijkstra(start NodeId, end NodeId) (Distance, []NodeId) {
 	visited := 0
 	for !queue.Empty() {
 		a := queue.Pop()
-		visited++
 		distance := a.first
 		here := a.second
-		//fmt.Println("visiting:", here, " distance:", distance)
+		//fmt.Println("visiting:", here, "distance:", distance)
+		visited++
 		for _, e := range g.edge[here] {
 			to := e.first
 			w := distance + e.second
@@ -107,7 +130,7 @@ func dijkstra(start NodeId, end NodeId) (Distance, []NodeId) {
 		result = append(result, g.idx2id[n])
 	}
 
-	return d[e] / 1000, result
+	return d[e] / DISTANCE_MULTIPLE, result
 }
 
 func main() {

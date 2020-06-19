@@ -9,7 +9,8 @@ func NewPriorityQueue() *PriorityQueue {
 }
 
 func (q *PriorityQueue) isPrior(i, j int) bool {
-	return q.tree[i].first < q.tree[j].first
+	a, b := q.tree[i].first, q.tree[j].first
+	return a < b || (a == b && q.tree[i].second < q.tree[j].second)
 }
 
 func (q *PriorityQueue) Empty() bool {

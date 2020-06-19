@@ -9,6 +9,8 @@ type NodeId = u32;
 type NodeIndex = u32;
 type Distance = u32;
 
+const DISTANCE_MULTIPLE:u32 = 100;
+
 struct Edge {
 	first: NodeIndex,
 	second: Distance,
@@ -40,6 +42,26 @@ fn add_edge(g:&mut G, start:NodeId, end:NodeId, distance:Distance) {
 
 }
 
+fn stof100(s:&str) -> u32 {
+	let mut result:u32 = 0;
+	let mut place:u32 = 0;
+	for ch in s.chars() {
+		if ch == '.' {
+			place = 1;
+		} else {
+			result *= 10;
+			result += (ch as u32) - ('0' as u32);
+			if place > 0 {
+				place = place + 1;
+				if place >= 3 {
+					break;
+				}
+			}
+		}
+	}
+	return result;
+}
+
 fn load(g:&mut G) {
 	for (index, line) in io::stdin().lock().lines().enumerate() {
 		if index == 0 {
@@ -49,8 +71,9 @@ fn load(g:&mut G) {
 			let fields: Vec<&str> = l.split(',').collect();
 			let s: u32 = fields[2].parse().unwrap();
 			let e: u32 = fields[3].parse().unwrap();
-			let d: f32 = fields[5].parse().unwrap();
-			add_edge(g, s, e, (d * 1000.0) as Distance);
+			let d: u32 = stof100(fields[5]);
+			//println!("line: {} s: {} e: {} D: {}", l, s, e, d);
+			add_edge(g, s, e, d as Distance);
 		}
 	}	
 }
@@ -66,25 +89,14 @@ fn dijkstra(g:&G, start:NodeId, end:NodeId) -> (Distance, Vec<NodeId>) {
 	let mut vv = vec![0; size];
 
 	let mut queue = BinaryHeap::new();
-	queue.push((Reverse(0), s));
+	queue.push((Reverse(0), Reverse(s)));
 
 	let mut visited = 0;
 	while let Some(v) = queue.pop() {
-		let (Reverse(distance), here) = (v.0, v.1);
+		let (Reverse(distance), Reverse(here)) = (v.0, v.1);
+		//println!("visiting: {} distance: {}", here, distance);
 		visited = visited + 1;
-		// if visited % 1000000 == 0 {
-		// 	let mut sum:i64 = 0;
-		// 	let mut max = 0;
-		// 	let mut n = 0;
-		// 	for i in &vv {
-		// 		n = n + 1;
-		// 		sum = sum + *i;
-		// 		if i > &max {
-		// 			max = *i;
-		// 		}
-		// 	}
-		// 	println!("visiting:{} distance:{} qlen:{} visited:{} avg:{}, max:{}", here, distance, queue.len(), visited, sum/n, max);
-		// }
+		//println!("visiting: {} distance: {} qlen:{} visited:{} avg:{}, max:{}", here, distance, queue.len(), visited, sum/n, max);
 		// std::thread::sleep(std::time::Duration::from_millis(1000));
 		for edge in &g.edge[here as usize] {
 			let (to, weight) = (edge.first as usize, edge.second);
@@ -94,11 +106,11 @@ fn dijkstra(g:&G, start:NodeId, end:NodeId) -> (Distance, Vec<NodeId>) {
 				prev[to] = here;
 				d[to] = w;
 				vv[to] = vv[to] + 1;
-				queue.push((Reverse(w), to as NodeIndex));
+				queue.push((Reverse(w), Reverse(to as NodeIndex)));
 			}
 		}
 	}
-	println!("visited:{}", visited);
+	println!("visited: {}", visited);
 
 	let mut n = e;
 	let mut result = vec![g.idx2id[n as usize]];
@@ -108,7 +120,7 @@ fn dijkstra(g:&G, start:NodeId, end:NodeId) -> (Distance, Vec<NodeId>) {
 		result.push(g.idx2id[n as usize]);
 	}
 
-	return ((d[e as usize] / 1000) as Distance, result);
+	return ((d[e as usize] / DISTANCE_MULTIPLE) as Distance, result);
 }
 
 fn main() {
@@ -118,7 +130,7 @@ fn main() {
 	let mut g = G{id2idx:HashMap::new(), idx2id:vec![0], idx:1, edge:vec![vec![]]};
 
 	load(&mut g);
-	println!("loaded nodes:{}", g.idx);
+	println!("loaded nodes: {}", g.idx);
 
 	let mut distance: Distance;
 	let mut route = vec![0 as NodeId; 0];
@@ -127,7 +139,7 @@ fn main() {
 		let result = dijkstra(&g, s, g.idx2id[1]);
 		distance = result.0;
 		route = result.1;
-		println!("distance:{}", distance);
+		println!("distance: {}", distance);
 	}
 
 	let mut result = String::from("route: ");
