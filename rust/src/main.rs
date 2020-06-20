@@ -1,9 +1,10 @@
 use std::cmp::Reverse;
 use std::collections::BinaryHeap;
-use std::collections::HashMap;
 use std::env;
 use std::io;
 use std::io::prelude::*;
+
+use rustc_hash::FxHashMap;
 
 type NodeId = u32;
 type NodeIndex = u32;
@@ -17,7 +18,7 @@ struct Edge {
 }
 
 struct G {
-    id2idx: HashMap<NodeId, NodeIndex>,
+    id2idx: FxHashMap<NodeId, NodeIndex>,
     idx2id: Vec<NodeId>,
     idx: NodeIndex,
     edge: Vec<Vec<Edge>>,
@@ -150,7 +151,7 @@ fn main() {
     }
 
     let mut g = G {
-        id2idx: HashMap::new(),
+        id2idx: FxHashMap::default(),
         idx2id: vec![0],
         idx: 1,
         edge: vec![vec![]],
