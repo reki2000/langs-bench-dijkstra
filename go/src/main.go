@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 )
 
 type Edge struct {
@@ -15,6 +16,8 @@ type Edge struct {
 type NodeId int
 type NodeIndex int
 type Distance int
+
+var is_debug = false
 
 type G struct {
 	id2idx map[NodeId]NodeIndex
@@ -56,16 +59,20 @@ func stof100(s string) int {
 	for _, ch := range s {
 		if ch == '.' {
 			place = 1
-		} else {
-			result *= 10
-			result += int(ch) - int('0')
-			if place > 0 {
-				place++
-				if place >= 3 {
-					break
-				}
+			continue
+		}
+		result *= 10
+		result += int(ch) - int('0')
+		if place > 0 {
+			place++
+			if place >= 3 {
+				break
 			}
 		}
+	}
+	for place < 3 {
+		result *= 10
+		place++
 	}
 	return result
 }
@@ -83,7 +90,9 @@ func load() {
 		e, _ := strconv.Atoi(line[3])
 		d := stof100(line[5])
 		add_edge(NodeId(s), NodeId(e), Distance(d))
-		// fmt.Println("line:", strings.Join(line, ","), "s:", s, "e:", e, "D:", Distance(d))
+		if is_debug {
+			fmt.Println("line:", strings.Join(line, ","), "s:", s, "e:", e, "D:", Distance(d))
+		}
 	}
 }
 
@@ -108,7 +117,9 @@ func dijkstra(start NodeId, end NodeId) (Distance, []NodeId) {
 		a := queue.Pop()
 		distance := a.first
 		here := a.second
-		//fmt.Println("visiting:", here, "distance:", distance)
+		if is_debug {
+			fmt.Println("visiting:", here, "distance:", distance)
+		}
 		visited++
 		for _, e := range g.edge[here] {
 			to := e.first
@@ -135,6 +146,7 @@ func dijkstra(start NodeId, end NodeId) (Distance, []NodeId) {
 
 func main() {
 	count, _ := strconv.Atoi(os.Args[1])
+	is_debug = len(os.Args) > 2 && os.Args[2] == "debug"
 
 	load()
 	fmt.Println("loaded nodes:", g.idx)

@@ -15,7 +15,9 @@ end
 
 
 @inline function is_prior(q::PriorityQueue, i::UInt32, j::UInt32)::Bool 
-	@inbounds q.tree[i].first < q.tree[j].first
+	@inbounds local a = q.tree[i]
+	@inbounds local b = q.tree[j]
+	a.first < b.first || (a.first == b.first && a.second < b.second)
 end
 
 @inline function swap!(q::PriorityQueue, i::UInt32, j::UInt32) 
@@ -53,11 +55,11 @@ function pop!(q::PriorityQueue)::Visit
 	index::UInt32 = 1
 	while true
 		child::UInt32 = (index  << 1)
-		if child >= size 
+		if child > size 
 			break
 		end
 		rIndex::UInt32 = child + 1
-		if rIndex < size && is_prior(q, rIndex, child) 
+		if rIndex <= size && is_prior(q, rIndex, child) 
 			child = rIndex
 		end
 		if is_prior(q, index, child) 

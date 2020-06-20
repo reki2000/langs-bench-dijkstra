@@ -8,6 +8,8 @@ using Edge = pair<NodeIndex, Distance>;
 
 const int DISTANCE_MULTIPLE = 100;
 
+bool is_debug = false;
+
 struct G {
   map<NodeId,NodeIndex> id2idx;
   vector<NodeId> idx2id = {0};
@@ -36,20 +38,23 @@ void add_edge(NodeId start, NodeId end, Distance distance) {
 int stof100(const char *s) {
   int result = 0;
   int place = 0;
-  while (*s != '\0') {
+  for (;*s != '\0'; s++) {
     if (*s == '.') {
       place = 1;
-    } else {
-      result *= 10;
-      result += *s - '0';
-      if (place > 0) {
-        place++;
-        if (place >= 3) {
-            break;
-        }
+      continue;
+    }
+    result *= 10;
+    result += *s - '0';
+    if (place > 0) {
+      place++;
+      if (place >= 3) {
+          break;
       }
     }
-    s++;
+  }
+  while (place < 3) {
+    result *= 10;
+    place++;
   }
   return result;
 }
@@ -77,7 +82,7 @@ void load() {
         idx++;
       }
     }
-    //cout << "line: " << line << " s: " << s << " e: " << e << " D: " << (int)(d) << endl;
+    if (is_debug) cout << "line: " << line << " s: " << s << " e: " << e << " D: " << d << endl;
     // cerr << "line:" << line << "s:" << s << " e:" << e << " d:" << d << endl;
     // std::this_thread::sleep_for(std::chrono::seconds(1));
     add_edge(s, e, (int)d);
@@ -103,7 +108,7 @@ pair<Distance, vector<NodeId>> dijkstra(NodeId start, NodeId end) {
     queue.pop();
     Distance distance = a.first;
     NodeIndex here = a.second;
-    //cout << "visiting: " << here << " distance: " << distance << endl;
+    if (is_debug) cout << "visiting: " << here << " distance: " << distance << endl;
     visited++;
     for (Edge e : g.edge[here]) {
       NodeIndex to = e.first;
@@ -135,10 +140,11 @@ int main(int argc, char **argv) {
   ios::sync_with_stdio(false);
   cin.tie(nullptr);
 
+  int count = atoi(argv[1]);
+  is_debug = argc > 2 && string(argv[2]) == "debug";
+
   load();
   cerr << "loaded nodes: " << g.idx << endl;
-
-  int count = atoi(argv[1]);
 
   pair<Distance, vector<NodeId>> result;
   for (int i=0; i<count; i++) {

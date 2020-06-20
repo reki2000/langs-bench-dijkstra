@@ -3,6 +3,9 @@ import Base.push!
 
 include("priorityqueue.jl")
 
+is_debug = false
+const DISTANCE_MULTIPLE = 100
+
 mutable struct Edge
 	first::NodeIndex
 	second::Distance
@@ -24,7 +27,7 @@ function get_idx(id::NodeId)::NodeIndex
     g.id2idx[id] = i
     push!(g.idx2id, id)
     push!(g.edge, Array{Edge,1}())
-    g.idx = g.idx + 1
+    g.idx += 1
   end
 	i
 end
@@ -35,10 +38,34 @@ function add_edge(start::NodeId, _end::NodeId, distance::Distance)
 	push!(g.edge[s], Edge(e, distance))
 end
 
+function stof100(s::AbstractString)::UInt32
+	local result = 0
+	local place = 0
+	for ch in s
+		if ch == '.'
+			place = 1
+			continue
+		end
+		result *= 10
+		result += ch - '0'
+		if place > 0
+			place += 1
+			if place >= 3
+				break
+			end
+		end
+	end
+	while place < 3
+		result *= 10
+		place += 1
+	end
+	return result
+end
+
 function load() 
 	i = 0
 	for line in eachline(stdin)
-		i = i + 1
+		i += 1
 		if i == 1
 			continue
 		end
@@ -46,8 +73,9 @@ function load()
 		# println(data)
 		s = parse(Int32, data[3])
 		e = parse(Int32, data[4])
-		d = parse(Float32, data[6])
-		add_edge(NodeId(s), NodeId(e), Distance(trunc(Distance, d*1000)))
+		d = stof100(data[6])
+		if is_debug println("line: ",line, " s: ",s," e: ",e," D: ",d) end
+		add_edge(NodeId(s), NodeId(e), Distance(d))
 	end
 end
 
@@ -73,7 +101,7 @@ function dijkstra(start::NodeId, _end::NodeId)::Result
 		visited = visited + 1
 		distance = a.first
 		here = a.second
-		# print("visiting:", here, " distance:", distance)
+		if is_debug println("visiting: ", here, " distance: ", distance) end
 		for e in g.edge[here] 
 			to = e.first
 			w = distance + e.second
@@ -84,7 +112,7 @@ function dijkstra(start::NodeId, _end::NodeId)::Result
 			end
 		end
 	end
-	println("visited:", visited)
+	println("visited: ", visited)
 
 	n = e
 	result = [g.idx2id[n]]
@@ -94,22 +122,23 @@ function dijkstra(start::NodeId, _end::NodeId)::Result
 		push!(result, g.idx2id[n])
 	end
 
-	return Result(trunc(Distance, d[e] / 1000), result)
+	return Result(trunc(Distance, d[e] / DISTANCE_MULTIPLE), result)
 end
 
 function main() 
 	count = parse(Int, ARGS[1])
+	global is_debug = size(ARGS,1) > 1 && ARGS[2] == "debug"
 
 	load()
-	println("loaded nodes:", g.idx)
+	println("loaded nodes: ", g.idx)
 
 	route = []
-	for i in 0:count 
-		s = g.idx2id[(i+1)*1000+1]
+	for i in 1:count 
+		s = g.idx2id[i*1000]
 		result = dijkstra(s, g.idx2id[1])
 		distance = result.first
 		route = result.second
-		println("distance:", distance)
+		println("distance: ", distance)
 	end
 
 	print("route: ")
