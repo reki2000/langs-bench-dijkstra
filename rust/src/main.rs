@@ -32,7 +32,7 @@ fn get_idx(g: &mut G, id: NodeId) -> NodeIndex {
     g.idx2id.push(id);
     g.edge.push(vec![]);
     g.idx += 1;
-    return i;
+    i
 }
 
 fn add_edge(g: &mut G, start: NodeId, end: NodeId, distance: Distance) {
@@ -55,7 +55,7 @@ fn stof100(s: &str) -> u32 {
         result *= 10;
         result += (ch as u32) - ('0' as u32);
         if place > 0 {
-            place = place + 1;
+            place += 1;
             if place >= 3 {
                 break;
             }
@@ -65,7 +65,7 @@ fn stof100(s: &str) -> u32 {
         result *= 10;
         place += 1;
     }
-    return result;
+    result
 }
 
 fn load(g: &mut G) {
@@ -88,6 +88,9 @@ fn load(g: &mut G) {
     }
 }
 
+// Disable Clippy warning for a lint: more than 4 bindings with single-character names in a scope.
+// https://rust-lang.github.io/rust-clippy/master/index.html#many_single_char_names
+#[allow(clippy::many_single_char_names)]
 fn dijkstra(g: &G, start: NodeId, end: NodeId) -> (Distance, Vec<NodeId>) {
     let s = *g.id2idx.get(&start).unwrap();
     let e = *g.id2idx.get(&end).unwrap();
@@ -109,7 +112,7 @@ fn dijkstra(g: &G, start: NodeId, end: NodeId) -> (Distance, Vec<NodeId>) {
                 println!("visiting: {} distance: {}", here, distance);
             }
         }
-        visited = visited + 1;
+        visited += 1;
         //println!("visiting: {} distance: {} qlen:{} visited:{} avg:{}, max:{}", here, distance, queue.len(), visited, sum/n, max);
         // std::thread::sleep(std::time::Duration::from_millis(1000));
         for edge in &g.edge[here as usize] {
@@ -134,7 +137,7 @@ fn dijkstra(g: &G, start: NodeId, end: NodeId) -> (Distance, Vec<NodeId>) {
         result.push(g.idx2id[n as usize]);
     }
 
-    return ((d[e as usize] / DISTANCE_MULTIPLE) as Distance, result);
+    ((d[e as usize] / DISTANCE_MULTIPLE) as Distance, result)
 }
 
 static mut IS_DEBUG: bool = false;
