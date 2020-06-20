@@ -1,6 +1,7 @@
 use std::cmp::Reverse;
 use std::collections::BinaryHeap;
 use std::env;
+use std::error::Error;
 use std::io;
 use std::io::prelude::*;
 
@@ -46,8 +47,8 @@ fn add_edge(g: &mut G, start: NodeId, end: NodeId, distance: Distance) {
 }
 
 fn stof100(s: &str) -> u32 {
-    let mut result: u32 = 0;
-    let mut place: u32 = 0;
+    let mut result = 0;
+    let mut place = 0u32;
     for ch in s.chars() {
         if ch == '.' {
             place = 1;
@@ -69,22 +70,22 @@ fn stof100(s: &str) -> u32 {
     result
 }
 
-fn load(g: &mut G) {
+fn load(g: &mut G) -> Result<(), Box<dyn Error>> {
     for line in io::stdin().lock().lines().skip(1) {
-        if let Ok(l) = line {
-            let mut fields = l.split(',').skip(2);
-            let s: u32 = fields.next().unwrap().parse().unwrap();
-            let e: u32 = fields.next().unwrap().parse().unwrap();
-            fields.next().unwrap();
-            let d = stof100(fields.next().unwrap());
-            unsafe {
-                if IS_DEBUG {
-                    println!("line: {} s: {} e: {} D: {}", l, s, e, d);
-                }
+        let line = line?;
+        let mut fields = line.split(',').skip(2);
+        let s: u32 = fields.next().unwrap().parse()?;
+        let e: u32 = fields.next().unwrap().parse()?;
+        fields.next().unwrap();
+        let d = stof100(fields.next().unwrap());
+        unsafe {
+            if IS_DEBUG {
+                println!("line: {} s: {} e: {} D: {}", line, s, e, d);
             }
-            add_edge(g, s, e, d as Distance);
         }
+        add_edge(g, s, e, d as Distance);
     }
+    Ok(())
 }
 
 // Disable Clippy warning for a lint: more than 4 bindings with single-character names in a scope.
@@ -141,9 +142,9 @@ fn dijkstra(g: &G, start: NodeId, end: NodeId) -> (Distance, Vec<NodeId>) {
 
 static mut IS_DEBUG: bool = false;
 
-fn main() {
+fn main() -> Result<(), Box<dyn Error>> {
     let args: Vec<String> = env::args().collect();
-    let count: i32 = args[1].parse().unwrap();
+    let count: i32 = args[1].parse()?;
     unsafe {
         IS_DEBUG = args.len() > 2 && args[2] == "debug";
     }
@@ -155,7 +156,7 @@ fn main() {
         edge: vec![vec![]],
     };
 
-    load(&mut g);
+    load(&mut g)?;
     println!("loaded nodes: {}", g.idx);
 
     let mut distance: Distance;
@@ -173,4 +174,5 @@ fn main() {
         result = result + &id.to_string() + " ";
     }
     println!("{}", result);
+    Ok(())
 }
