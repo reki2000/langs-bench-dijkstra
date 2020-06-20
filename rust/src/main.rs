@@ -70,15 +70,13 @@ fn stof100(s: &str) -> u32 {
 }
 
 fn load(g: &mut G) {
-    for (index, line) in io::stdin().lock().lines().enumerate() {
-        if index == 0 {
-            continue;
-        }
+    for line in io::stdin().lock().lines().skip(1) {
         if let Ok(l) = line {
-            let fields: Vec<&str> = l.split(',').collect();
-            let s: u32 = fields[2].parse().unwrap();
-            let e: u32 = fields[3].parse().unwrap();
-            let d: u32 = stof100(fields[5]);
+            let mut fields = l.split(',').skip(2);
+            let s: u32 = fields.next().unwrap().parse().unwrap();
+            let e: u32 = fields.next().unwrap().parse().unwrap();
+            fields.next().unwrap();
+            let d = stof100(fields.next().unwrap());
             unsafe {
                 if IS_DEBUG {
                     println!("line: {} s: {} e: {} D: {}", l, s, e, d);
