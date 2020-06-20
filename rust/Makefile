@@ -1,8 +1,9 @@
 all: main
 
 clean:
-	rm main
-	rm -rf target
+	cargo clean
+	rm -f main
 
 main: src/main.rs
-	rustc -C opt-level=3 src/main.rs
+	cargo build --release
+	cp -p ./target/release/langs-bench-rust ./main
