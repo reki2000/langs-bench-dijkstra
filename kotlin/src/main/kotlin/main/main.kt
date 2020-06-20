@@ -6,6 +6,8 @@ typealias NodeId = Int
 typealias NodeIndex = Int
 typealias Distance = Int
 
+val DISTANCE_MULTIPLE = 100
+
 class G(
 	var id2idx:MutableMap<NodeId,NodeIndex> = mutableMapOf<NodeId,NodeIndex>(),
 	var idx2id:MutableList<NodeId> = mutableListOf(0),
@@ -32,6 +34,26 @@ fun add_edge(start:NodeId, end:NodeId, distance:Distance) {
 	g.edge[s].add(Edge(e, distance))
 }
 
+fun stof100(s:String):Int {
+	var result = 0
+	var place = 0
+	for (ch in s) {
+		if (ch == '.') {
+			place = 1
+		} else {
+			result *= 10
+			result += ch - '0'
+			if (place > 0) {
+				place++
+				if (place >= 3) {
+					break;
+				}
+			}
+		}
+	}
+	return result;
+}
+
 fun load() {
 	readLine() // skip header
 
@@ -43,8 +65,9 @@ fun load() {
 		val fields = line.split(",")
 		val s = fields[2].toInt()
 		val e = fields[3].toInt()
-		val d = fields[5].toFloat()
-		add_edge(s, e, (d*1000).toInt())
+		val d = stof100(fields[5])
+		//println("line: " + line + " s: " + s + " e: " + e + " D: " + d)
+		add_edge(s, e, d)
 	}
 }
 
@@ -66,7 +89,7 @@ fun dijkstra(start:NodeId, end:NodeId):Result {
 	while (!queue.empty()) {
 		val (distance, here) = queue.pop()
 		visited++
-		//println("visiting:" + here + " distance:" + distance + " q:" + queue.tree.size)
+		//println("visiting: " + here + " distance: " + distance)
 		for ((to, weight) in g.edge[here]) {
 			val w = distance + weight
 			if (d[to] == 0 || w < d[to]) {
@@ -76,7 +99,7 @@ fun dijkstra(start:NodeId, end:NodeId):Result {
 			}
 		}
 	}
-	println("visited:"+ visited)
+	println("visited: "+ visited)
 
 	var n = e
 	val result = mutableListOf(g.idx2id[n])
@@ -86,23 +109,23 @@ fun dijkstra(start:NodeId, end:NodeId):Result {
 		result.add(g.idx2id[n])
 	}
 
-	return Result(d[e] / 1000, result)
+	return Result(d[e] / DISTANCE_MULTIPLE, result)
 }
 
 fun main(args: Array<String>) {
 	val count = args[0].toInt() 
 
 	load()
-	println("loaded nodes:" + g.idx)
+	println("loaded nodes: " + g.idx)
 
 	var distance: Distance
 	var route = listOf<NodeId>()
 	for (i in 1..count) {
-		val s = g.idx2id[(i+1)*1000]
+		val s = g.idx2id[i*1000]
 		val result = dijkstra(s, g.idx2id[1])
 		distance = result.first
 		route = result.second
-		println("distance:" + distance)
+		println("distance: " + distance)
 	}
 
 	print("route: ")

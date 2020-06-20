@@ -12,7 +12,7 @@ class PriorityQueue() {
 	}
 
 	private fun _isPrior(i: Int, j: Int): Boolean {
-		return tree[i].first < tree[j].first
+		return tree[i].first < tree[j].first || (tree[i].first == tree[j].first && tree[i].second < tree[j].second)
 	}
 	
 	fun empty(): Boolean = tree.isEmpty()
