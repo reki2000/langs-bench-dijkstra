@@ -10,7 +10,7 @@ struct Visit
 end
 
 struct PriorityQueue
-	tree::Array{Visit}
+	tree::Array{Visit, 1}
 end
 
 
