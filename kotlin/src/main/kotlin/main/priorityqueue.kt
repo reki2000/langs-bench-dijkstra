@@ -1,7 +1,9 @@
 package main
 
-class PriorityQueue<T>(val isPrior:(T,T)->Boolean) {
-	val tree: MutableList<T> = mutableListOf<T>()
+typealias P = Pair<Int,Int>
+
+class PriorityQueue() {
+	val tree: MutableList<P> = mutableListOf<P>()
 
 	private fun swap(i: Int, j: Int) {
 		val tmp = tree[j]
@@ -9,11 +11,13 @@ class PriorityQueue<T>(val isPrior:(T,T)->Boolean) {
 		tree[i] = tmp
 	}
 
-	private fun _isPrior(i: Int, j: Int) = isPrior(tree[i], tree[j])
+	private fun _isPrior(i: Int, j: Int): Boolean {
+		return tree[i].first < tree[j].first || (tree[i].first == tree[j].first && tree[i].second < tree[j].second)
+	}
 	
-	fun empty(): Boolean = tree.size == 0
+	fun empty(): Boolean = tree.isEmpty()
 
-	fun push(v: T) {
+	fun push(v: P) {
 		var index = tree.size
 		tree.add(v)
 		while (index > 0) {
@@ -27,7 +31,7 @@ class PriorityQueue<T>(val isPrior:(T,T)->Boolean) {
 		}
 	}
 
-	fun pop():T {
+	fun pop(): P {
 		val result = tree[0]
 		val last = tree.last()
 		val size = tree.size - 1

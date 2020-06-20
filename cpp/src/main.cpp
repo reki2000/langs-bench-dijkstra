@@ -6,25 +6,24 @@ using NodeIndex = int;
 using Distance = int;
 using Edge = pair<NodeIndex, Distance>;
 
+const int DISTANCE_MULTIPLE = 100;
+
+bool is_debug = false;
+
 struct G {
   map<NodeId,NodeIndex> id2idx;
-  vector<NodeId> idx2id;
+  vector<NodeId> idx2id = {0};
   NodeIndex idx = 1;
-  vector<vector<Edge>> edge;
+  vector<vector<Edge>> edge = {vector<Edge>()};
 } g;
 
 NodeIndex get_idx(NodeId id) {
   NodeIndex i = g.id2idx[id];
   if (i == 0) {
     i = g.idx++;
-    if (i >= g.edge.capacity()) {
-      g.edge.resize(i*2);
-    }
-    if (i >= g.idx2id.capacity()) {
-      g.idx2id.resize(i*2);
-    }
     g.id2idx[id] = i;
-    g.idx2id[i] = id;
+    g.idx2id.push_back(id);
+    g.edge.push_back(vector<Edge>());
   }
   return i;
 }
@@ -35,27 +34,58 @@ void add_edge(NodeId start, NodeId end, Distance distance) {
   g.edge[s].push_back({e, distance});
 }
 
+// 123.4567 --> 12345
+int stof100(const char *s) {
+  int result = 0;
+  int place = 0;
+  for (;*s != '\0'; s++) {
+    if (*s == '.') {
+      place = 1;
+      continue;
+    }
+    result *= 10;
+    result += *s - '0';
+    if (place > 0) {
+      place++;
+      if (place >= 3) {
+          break;
+      }
+    }
+  }
+  while (place < 3) {
+    result *= 10;
+    place++;
+  }
+  return result;
+}
+
 void load() {
   string line;
-  getline(cin, line); // skip header
+  cin >> line; // skip header
 
   while (true) {
-    getline(cin, line);
+    cin >> line;
     if (cin.eof()) {
       break;
     }
-    stringstream l(line);
-    string s;
-    vector<string> data;
-    while (getline(l, s, ',')) {
-      data.push_back(s);
+    int s = 0, e = 0;
+    float d = 0;
+    for (int idx=0, pos=0, prev_pos=0; pos <= line.length(); pos++) {
+      if (line[pos] == ',' || pos == line.length()) {
+        auto field = line.substr(prev_pos, pos-prev_pos);
+        switch (idx) {
+          case 2: s = stoi(field); break;
+          case 3: e = stoi(field); break;
+          case 5: d = stof100(field.c_str()); break;
+        }
+        prev_pos = pos+1;
+        idx++;
+      }
     }
-    if (!l && s.empty()) {
-      data.push_back("");
-    }
-    //cout << "read:" << data[2] << "," << data[3] << "," << data[5] << endl;
-
-    add_edge(stoi(data[2]), stoi(data[3]), (int)(stof(data[5]) * 1000));
+    if (is_debug) cout << "line: " << line << " s: " << s << " e: " << e << " D: " << d << endl;
+    // cerr << "line:" << line << "s:" << s << " e:" << e << " d:" << d << endl;
+    // std::this_thread::sleep_for(std::chrono::seconds(1));
+    add_edge(s, e, (int)d);
   }
 }
 
@@ -78,10 +108,7 @@ pair<Distance, vector<NodeId>> dijkstra(NodeId start, NodeId end) {
     queue.pop();
     Distance distance = a.first;
     NodeIndex here = a.second;
-    // if (distance <= 0 && here != s) {
-    //   cerr << "assert" << endl;
-    //   exit(1);
-    // }
+    if (is_debug) cout << "visiting: " << here << " distance: " << distance << endl;
     visited++;
     for (Edge e : g.edge[here]) {
       NodeIndex to = e.first;
@@ -105,15 +132,19 @@ pair<Distance, vector<NodeId>> dijkstra(NodeId start, NodeId end) {
     result.push_back(g.idx2id[n]);
   }
 
-  return {d[e] / 1000, result};
+  return {d[e] / DISTANCE_MULTIPLE, result};
 
 }
 
 int main(int argc, char **argv) {
-  load();
-  cerr << "loaded nodes: " << g.idx << endl;
+  ios::sync_with_stdio(false);
+  cin.tie(nullptr);
 
   int count = atoi(argv[1]);
+  is_debug = argc > 2 && string(argv[2]) == "debug";
+
+  load();
+  cerr << "loaded nodes: " << g.idx << endl;
 
   pair<Distance, vector<NodeId>> result;
   for (int i=0; i<count; i++) {

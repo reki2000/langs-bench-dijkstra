@@ -1,23 +1,23 @@
 #!/bin/bash
 
-function bench {
-  hyperfine --warmup 1 "./bench.sh 20 < ../data/Tokyo_Edgelist.csv"
-}
-
-function measure {
+function check {
   local lang=$1
   echo "Testing $lang..."
   pushd $lang > /dev/null
   make -i clean > /dev/null && make > /dev/null
-  bench
+  ./bench.sh 1 debug < ../data/Tokyo_Edgelist.csv > ../out/$lang.txt 2>&1
   popd > /dev/null
+  diff -u out/expected.txt out/$lang.txt | head
 }
+
 set -e
 
 if [ -n "$1" ]; then
-  measure $1
+  for lang in "$@"; do
+    check $lang
+  done
 else 
   for lang in cpp go rust javascript julia kotlin python; do
-    measure $lang
+    check $lang
   done
 fi

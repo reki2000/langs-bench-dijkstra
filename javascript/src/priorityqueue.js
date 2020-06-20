@@ -5,7 +5,8 @@ class PriorityQueue {
 	}
 
 	isPrior(i, j) {
-		return this.tree[i][0] < this.tree[j][0];
+		var [a,b] = [this.tree[i], this.tree[j]];
+		return a[0] < b[0] || (a[0] === b[0] && a[1] < b[1]);
 	}
 
 	Empty() {

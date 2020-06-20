@@ -9,6 +9,8 @@ type NodeId = u32;
 type NodeIndex = u32;
 type Distance = u32;
 
+const DISTANCE_MULTIPLE:u32 = 100;
+
 struct Edge {
 	first: NodeIndex,
 	second: Distance,
@@ -29,7 +31,7 @@ fn get_idx(g:&mut G, id:NodeId) -> NodeIndex {
 	g.id2idx.insert(id, i);
 	g.idx2id.push(id);
 	g.edge.push(vec![]);
-	g.idx = g.idx + 1;
+	g.idx += 1;
 	return i;
 }
 
@@ -38,6 +40,30 @@ fn add_edge(g:&mut G, start:NodeId, end:NodeId, distance:Distance) {
 	let e = get_idx(g, end);
 	g.edge[(s as usize)].push(Edge{first:e, second:distance});
 
+}
+
+fn stof100(s:&str) -> u32 {
+	let mut result:u32 = 0;
+	let mut place:u32 = 0;
+	for ch in s.chars() {
+		if ch == '.' {
+			place = 1;
+			continue;
+		}
+		result *= 10;
+		result += (ch as u32) - ('0' as u32);
+		if place > 0 {
+			place = place + 1;
+			if place >= 3 {
+				break;
+			}
+		}
+	}
+	while place < 3 {
+		result *= 10;
+		place += 1;
+	}
+	return result;
 }
 
 fn load(g:&mut G) {
@@ -49,8 +75,13 @@ fn load(g:&mut G) {
 			let fields: Vec<&str> = l.split(',').collect();
 			let s: u32 = fields[2].parse().unwrap();
 			let e: u32 = fields[3].parse().unwrap();
-			let d: f32 = fields[5].parse().unwrap();
-			add_edge(g, s, e, (d * 1000.0) as Distance);
+			let d: u32 = stof100(fields[5]);
+			unsafe {
+				if IS_DEBUG {
+					println!("line: {} s: {} e: {} D: {}", l, s, e, d);
+				}
+			}
+			add_edge(g, s, e, d as Distance);
 		}
 	}	
 }
@@ -63,28 +94,21 @@ fn dijkstra(g:&G, start:NodeId, end:NodeId) -> (Distance, Vec<NodeId>) {
 	let mut d = vec![0 as Distance; size];
 	let mut prev = vec![0 as NodeIndex; size];
 
-	let mut vv = vec![0; size];
+	//let mut vv = vec![0; size];
 
 	let mut queue = BinaryHeap::new();
-	queue.push((Reverse(0), s));
+	queue.push((Reverse(0), Reverse(s)));
 
 	let mut visited = 0;
 	while let Some(v) = queue.pop() {
-		let (Reverse(distance), here) = (v.0, v.1);
+		let (Reverse(distance), Reverse(here)) = (v.0, v.1);
+		unsafe {
+			if IS_DEBUG {
+				println!("visiting: {} distance: {}", here, distance);
+			}
+		}
 		visited = visited + 1;
-		// if visited % 1000000 == 0 {
-		// 	let mut sum:i64 = 0;
-		// 	let mut max = 0;
-		// 	let mut n = 0;
-		// 	for i in &vv {
-		// 		n = n + 1;
-		// 		sum = sum + *i;
-		// 		if i > &max {
-		// 			max = *i;
-		// 		}
-		// 	}
-		// 	println!("visiting:{} distance:{} qlen:{} visited:{} avg:{}, max:{}", here, distance, queue.len(), visited, sum/n, max);
-		// }
+		//println!("visiting: {} distance: {} qlen:{} visited:{} avg:{}, max:{}", here, distance, queue.len(), visited, sum/n, max);
 		// std::thread::sleep(std::time::Duration::from_millis(1000));
 		for edge in &g.edge[here as usize] {
 			let (to, weight) = (edge.first as usize, edge.second);
@@ -93,12 +117,12 @@ fn dijkstra(g:&G, start:NodeId, end:NodeId) -> (Distance, Vec<NodeId>) {
 			if d[to] == 0 || w < d[to] {
 				prev[to] = here;
 				d[to] = w;
-				vv[to] = vv[to] + 1;
-				queue.push((Reverse(w), to as NodeIndex));
+				// vv[to] = vv[to] + 1;
+				queue.push((Reverse(w), Reverse(to as NodeIndex)));
 			}
 		}
 	}
-	println!("visited:{}", visited);
+	println!("visited: {}", visited);
 
 	let mut n = e;
 	let mut result = vec![g.idx2id[n as usize]];
@@ -108,17 +132,22 @@ fn dijkstra(g:&G, start:NodeId, end:NodeId) -> (Distance, Vec<NodeId>) {
 		result.push(g.idx2id[n as usize]);
 	}
 
-	return ((d[e as usize] / 1000) as Distance, result);
+	return ((d[e as usize] / DISTANCE_MULTIPLE) as Distance, result);
 }
+
+static mut IS_DEBUG: bool = false;
 
 fn main() {
 	let args: Vec<String> = env::args().collect();
 	let count: i32 = args[1].parse().unwrap();
+	unsafe {
+		IS_DEBUG = args.len() > 2 && args[2] == "debug";
+	}
 
 	let mut g = G{id2idx:HashMap::new(), idx2id:vec![0], idx:1, edge:vec![vec![]]};
 
 	load(&mut g);
-	println!("loaded nodes:{}", g.idx);
+	println!("loaded nodes: {}", g.idx);
 
 	let mut distance: Distance;
 	let mut route = vec![0 as NodeId; 0];
@@ -127,7 +156,7 @@ fn main() {
 		let result = dijkstra(&g, s, g.idx2id[1]);
 		distance = result.0;
 		route = result.1;
-		println!("distance:{}", distance);
+		println!("distance: {}", distance);
 	}
 
 	let mut result = String::from("route: ");

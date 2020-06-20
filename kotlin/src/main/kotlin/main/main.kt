@@ -6,6 +6,10 @@ typealias NodeId = Int
 typealias NodeIndex = Int
 typealias Distance = Int
 
+val DISTANCE_MULTIPLE = 100
+
+var is_debug = false
+
 class G(
 	var id2idx:MutableMap<NodeId,NodeIndex> = mutableMapOf<NodeId,NodeIndex>(),
 	var idx2id:MutableList<NodeId> = mutableListOf(0),
@@ -17,11 +21,10 @@ val g = G()
 
 fun get_idx(id:NodeId): NodeIndex {
 	return g.id2idx.getOrElse(id, {
-		val i = g.idx
+		val i = g.idx++
 		g.id2idx[id] = i
 		g.idx2id.add(id) 
 		g.edge.add(mutableListOf<Edge>())
-		g.idx++
 		return i
 	})
 }
@@ -31,6 +34,30 @@ fun add_edge(start:NodeId, end:NodeId, distance:Distance) {
 	val s = get_idx(start)
 	val e = get_idx(end)
 	g.edge[s].add(Edge(e, distance))
+}
+
+fun stof100(s:String):Int {
+	var result = 0
+	var place = 0
+	for (ch in s) {
+		if (ch == '.') {
+			place = 1
+			continue
+		}
+		result *= 10
+		result += ch - '0'
+		if (place > 0) {
+			place++
+			if (place >= 3) {
+				break;
+			}
+		}
+	}
+	while (place < 3) {
+		result *= 10
+		place++
+	}
+	return result;
 }
 
 fun load() {
@@ -44,8 +71,9 @@ fun load() {
 		val fields = line.split(",")
 		val s = fields[2].toInt()
 		val e = fields[3].toInt()
-		val d = fields[5].toFloat()
-		add_edge(s, e, (d*1000).toInt())
+		val d = stof100(fields[5])
+		if (is_debug) println("line: " + line + " s: " + s + " e: " + e + " D: " + d)
+		add_edge(s, e, d)
 	}
 }
 
@@ -60,20 +88,17 @@ fun dijkstra(start:NodeId, end:NodeId):Result {
 	val d = Array<Distance>(size) { 0 }
 	val prev = Array<NodeIndex>(size) { 0 }
 
-	//val isPrior: (Visit, Visit)->Boolean = {a, b -> a.first < b.first}
-	val queue = PriorityQueue<Visit>({a, b -> a.first < b.first})
+	val queue = PriorityQueue()
 	queue.push(Visit(0, s))
 
 	var visited = 0
 	while (!queue.empty()) {
-		val a = queue.pop()
+		val (distance, here) = queue.pop()
 		visited++
-		val distance = a.first
-		val here = a.second
-		//println("visiting:" + here + " distance:" + distance + " q:" + queue.tree.size)
-		for (edge in g.edge[here]) {
-			val to = edge.first
-			val w = distance + edge.second
+		if (is_debug) println("visiting: " + here + " distance: " + distance)
+
+		for ((to, weight) in g.edge[here]) {
+			val w = distance + weight
 			if (d[to] == 0 || w < d[to]) {
 				prev[to] = here
 				d[to] = w
@@ -81,7 +106,7 @@ fun dijkstra(start:NodeId, end:NodeId):Result {
 			}
 		}
 	}
-	println("visited:"+ visited)
+	println("visited: "+ visited)
 
 	var n = e
 	val result = mutableListOf(g.idx2id[n])
@@ -91,23 +116,24 @@ fun dijkstra(start:NodeId, end:NodeId):Result {
 		result.add(g.idx2id[n])
 	}
 
-	return Result(d[e] / 1000, result)
+	return Result(d[e] / DISTANCE_MULTIPLE, result)
 }
 
 fun main(args: Array<String>) {
 	val count = args[0].toInt() 
+	is_debug = args.size > 1 && args[1] == "debug"
 
 	load()
-	println("loaded nodes:" + g.idx)
+	println("loaded nodes: " + g.idx)
 
 	var distance: Distance
 	var route = listOf<NodeId>()
 	for (i in 1..count) {
-		val s = g.idx2id[(i+1)*1000]
+		val s = g.idx2id[i*1000]
 		val result = dijkstra(s, g.idx2id[1])
 		distance = result.first
 		route = result.second
-		println("distance:" + distance)
+		println("distance: " + distance)
 	}
 
 	print("route: ")

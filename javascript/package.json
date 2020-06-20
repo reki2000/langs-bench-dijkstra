@@ -1,0 +1,13 @@
+{
+    "name": "langs-bench-dijkstra",
+    "description": "",
+    "license": "MIT",
+    "version": "1.0.0",
+    "main": "src/main.js",
+    "scripts": {
+        "start": "node index.js"
+    },
+    "dependencies": {
+        "csv": "^5.3.2"
+    }
+}
