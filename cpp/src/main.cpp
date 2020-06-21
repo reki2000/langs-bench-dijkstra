@@ -73,8 +73,8 @@ void load() {
     }
     int s = 0, e = 0;
     float d = 0;
-    for (int idx=0, pos=0, prev_pos=0; pos <= line.length(); pos++) {
-      if (line[pos] == ',' || pos == line.length()) {
+    for (int idx=0, pos=0, prev_pos=0; static_cast<std::string::size_type>(pos) <= line.length(); pos++) {
+      if (line[pos] == ',' || static_cast<std::string::size_type>(pos) == line.length()) {
         const auto field = line.substr(prev_pos, pos-prev_pos);
         switch (idx) {
           case 2: s = stoi(field); break;
