@@ -4,22 +4,20 @@
 #include<iostream>
 #include<queue>
 
-using namespace std;
-
 using NodeId = int;
 using NodeIndex = int;
 using Distance = int;
-using Edge = pair<NodeIndex, Distance>;
+using Edge = std::pair<NodeIndex, Distance>;
 
 const int DISTANCE_MULTIPLE = 100;
 
 bool is_debug = false;
 
 struct G {
-  map<NodeId,NodeIndex> id2idx;
-  vector<NodeId> idx2id = {0};
+  std::map<NodeId,NodeIndex> id2idx;
+  std::vector<NodeId> idx2id = {0};
   NodeIndex idx = 1;
-  vector<vector<Edge>> edge = {vector<Edge>()};
+  std::vector<std::vector<Edge>> edge = {std::vector<Edge>()};
 } g;
 
 NodeIndex get_idx(NodeId id) {
@@ -28,7 +26,7 @@ NodeIndex get_idx(NodeId id) {
     i = g.idx++;
     g.id2idx[id] = i;
     g.idx2id.push_back(id);
-    g.edge.push_back(vector<Edge>());
+    g.edge.push_back(std::vector<Edge>());
   }
   return i;
 }
@@ -65,12 +63,12 @@ int stof100(const char *s) {
 }
 
 void load() {
-  string line;
-  cin >> line; // skip header
+  std::string line;
+  std::cin >> line; // skip header
 
   while (true) {
-    cin >> line;
-    if (cin.eof()) {
+    std::cin >> line;
+    if (std::cin.eof()) {
       break;
     }
     int s = 0, e = 0;
@@ -87,16 +85,16 @@ void load() {
         idx++;
       }
     }
-    if (is_debug) cout << "line: " << line << " s: " << s << " e: " << e << " D: " << d << endl;
+    if (is_debug) std::cout << "line: " << line << " s: " << s << " e: " << e << " D: " << d << std::endl;
     // cerr << "line:" << line << "s:" << s << " e:" << e << " d:" << d << endl;
     // std::this_thread::sleep_for(std::chrono::seconds(1));
     add_edge(s, e, (int)d);
   }
 }
 
-using Visit = pair<Distance, NodeIndex>;
+using Visit = std::pair<Distance, NodeIndex>;
 
-pair<Distance, vector<NodeId>> dijkstra(NodeId start, NodeId end) {
+std::pair<Distance, std::vector<NodeId>> dijkstra(NodeId start, NodeId end) {
   NodeIndex s = get_idx(start);
   NodeIndex e = get_idx(end);
 
@@ -104,7 +102,7 @@ pair<Distance, vector<NodeId>> dijkstra(NodeId start, NodeId end) {
   std::vector<Distance> d(size);
   std::vector<NodeIndex> prev(size);
 
-  priority_queue<Visit, vector<Visit>, greater<Visit>> queue;
+  std::priority_queue<Visit, std::vector<Visit>, std::greater<Visit>> queue;
   queue.push({0,s});
 
   int visited = 0;
@@ -113,7 +111,7 @@ pair<Distance, vector<NodeId>> dijkstra(NodeId start, NodeId end) {
     queue.pop();
     Distance distance = a.first;
     NodeIndex here = a.second;
-    if (is_debug) cout << "visiting: " << here << " distance: " << distance << endl;
+    if (is_debug) std::cout << "visiting: " << here << " distance: " << distance << std::endl;
     visited++;
     for (Edge e : g.edge[here]) {
       NodeIndex to = e.first;
@@ -126,9 +124,9 @@ pair<Distance, vector<NodeId>> dijkstra(NodeId start, NodeId end) {
     }
   }
 
-  cerr << "visited: " << visited << endl;
+  std::cerr << "visited: " << visited << std::endl;
 
-  vector<NodeId> result;
+  std::vector<NodeId> result;
   NodeIndex n = e;
   result.push_back(g.idx2id[n]);
 
@@ -142,25 +140,25 @@ pair<Distance, vector<NodeId>> dijkstra(NodeId start, NodeId end) {
 }
 
 int main(int argc, char **argv) {
-  ios::sync_with_stdio(false);
-  cin.tie(nullptr);
+  std::ios::sync_with_stdio(false);
+  std::cin.tie(nullptr);
 
   int count = atoi(argv[1]);
-  is_debug = argc > 2 && string(argv[2]) == "debug";
+  is_debug = argc > 2 && std::string(argv[2]) == "debug";
 
   load();
-  cerr << "loaded nodes: " << g.idx << endl;
+  std::cerr << "loaded nodes: " << g.idx << std::endl;
 
-  pair<Distance, vector<NodeId>> result;
+  std::pair<Distance, std::vector<NodeId>> result;
   for (int i=0; i<count; i++) {
     NodeId s = g.idx2id[(i+1) * 1000];
     result = dijkstra(s, g.idx2id[1]);
-    cout << "distance: " << result.first << endl;
+    std::cout << "distance: " << result.first << std::endl;
   }
 
-  cout << "route: ";
+  std::cout << "route: ";
   for (NodeId id: result.second) {
-    cout << id << " ";
+    std::cout << id << " ";
   }
-  cout << endl;
+  std::cout << std::endl;
 }
