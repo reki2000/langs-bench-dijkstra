@@ -65,10 +65,10 @@ int stof100(const char *s) {
 
 void load() {
   std::string line;
-  std::cin >> line; // skip header
+  std::getline(std::cin, line); // skip header
 
   while (true) {
-    std::cin >> line;
+    std::getline(std::cin, line);
     if (std::cin.eof()) {
       break;
     }
