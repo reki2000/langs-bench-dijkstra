@@ -4,4 +4,4 @@ clean:
 	rm main
 
 main: src/main.cpp
-	g++ -std=gnu++11 -O3 -Wall -Wextra -march=native -mtune=native -o main src/main.cpp
+	g++ -std=c++17 -O3 -Wall -Wextra -pedantic-errors -march=native -mtune=native -o main src/main.cpp

@@ -96,8 +96,8 @@ pair<Distance, vector<NodeId>> dijkstra(NodeId start, NodeId end) {
   NodeIndex e = get_idx(end);
 
   int size = g.idx;
-  Distance d[size] = {};
-  NodeIndex prev[size] = {};
+  std::vector<Distance> d(size);
+  std::vector<NodeIndex> prev(size);
 
   priority_queue<Visit, vector<Visit>, greater<Visit>> queue;
   queue.push({0,s});
