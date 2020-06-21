@@ -80,8 +80,8 @@ void load() {
     if (std::cin.eof()) {
       break;
     }
-    int s = 0, e = 0;
-    float d = 0;
+    NodeId s = 0, e = 0;
+    Distance d = 0;
     for (int idx=0, pos=0, prev_pos=0; static_cast<std::string::size_type>(pos) <= line.length(); pos++) {
       if (line[pos] == ',' || static_cast<std::string::size_type>(pos) == line.length()) {
         const auto field = line.substr(prev_pos, pos-prev_pos);
@@ -97,7 +97,7 @@ void load() {
     if (is_debug) std::cout << "line: " << line << " s: " << s << " e: " << e << " D: " << d << std::endl;
     // cerr << "line:" << line << "s:" << s << " e:" << e << " d:" << d << endl;
     // std::this_thread::sleep_for(std::chrono::seconds(1));
-    add_edge(s, e, (int)d);
+    add_edge(s, e, d);
   }
 }
 
