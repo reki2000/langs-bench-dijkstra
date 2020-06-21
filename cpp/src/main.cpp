@@ -38,6 +38,15 @@ void add_edge(NodeId start, NodeId end, Distance distance) {
   g.edge[s].push_back({e, distance});
 }
 
+int stoi(std::string_view s) {
+  int result = 0;
+  for(auto&& x : s) {
+    result *= 10;
+    result += x - '0';
+  }
+  return result;
+}
+
 // 123.4567 --> 12345
 int stof100(std::string_view s) {
   int result = 0;
