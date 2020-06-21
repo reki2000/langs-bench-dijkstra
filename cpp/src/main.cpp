@@ -1,6 +1,7 @@
 #include<vector>
 #include<unordered_map>
 #include<string>
+#include<string_view>
 #include<iostream>
 #include<queue>
 
@@ -144,7 +145,7 @@ int main(int argc, char **argv) {
   std::cin.tie(nullptr);
 
   const int count = atoi(argv[1]);
-  is_debug = argc > 2 && std::string(argv[2]) == "debug";
+  is_debug = argc > 2 && std::string_view(argv[2]) == "debug";
 
   load();
   std::cerr << "loaded nodes: " << g.idx << std::endl;
