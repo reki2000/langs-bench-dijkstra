@@ -11,7 +11,7 @@ And runs on languages below:
 - JavaScript : NodeJS 13 
 - Kotlin : 1.3 + jdk >=8
 - Julia : 1.4
-- GCC : 7.5 (or versions which support C++17)
+- Clang : 7 (or versions which support C++17)
 
 I like to use [asdf](https://asdf-vm.com/#/) to set up those environments.
 
