@@ -21,7 +21,7 @@ struct G {
   std::vector<std::vector<Edge>> edge = {std::vector<Edge>()};
 } g;
 
-NodeIndex get_idx(NodeId id) {
+inline NodeIndex get_idx(NodeId id) {
   NodeIndex i = g.id2idx[id];
   if (i == 0) {
     i = g.idx++;
@@ -32,13 +32,13 @@ NodeIndex get_idx(NodeId id) {
   return i;
 }
 
-void add_edge(NodeId start, NodeId end, Distance distance) {
+inline void add_edge(NodeId start, NodeId end, Distance distance) {
   const NodeIndex s = get_idx(start);
   const NodeIndex e = get_idx(end);
   g.edge[s].push_back({e, distance});
 }
 
-int stoi(std::string_view s) {
+inline int stoi(std::string_view s) {
   int result = 0;
   for(auto&& x : s) {
     result *= 10;
@@ -48,7 +48,7 @@ int stoi(std::string_view s) {
 }
 
 // 123.4567 --> 12345
-int stof100(std::string_view s) {
+inline int stof100(std::string_view s) {
   int result = 0;
   int place = 3;
   auto it = s.cbegin();
@@ -103,7 +103,7 @@ void load() {
 
 using Visit = std::pair<Distance, NodeIndex>;
 
-std::pair<Distance, std::vector<NodeId>> dijkstra(NodeId start, NodeId end) {
+inline std::pair<Distance, std::vector<NodeId>> dijkstra(NodeId start, NodeId end) {
   const NodeIndex s = get_idx(start);
   const NodeIndex e = get_idx(end);
 
