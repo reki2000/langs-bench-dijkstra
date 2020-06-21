@@ -1,5 +1,5 @@
 #include<vector>
-#include<map>
+#include<unordered_map>
 #include<string>
 #include<iostream>
 #include<queue>
@@ -14,7 +14,7 @@ const int DISTANCE_MULTIPLE = 100;
 bool is_debug = false;
 
 struct G {
-  std::map<NodeId,NodeIndex> id2idx;
+  std::unordered_map<NodeId,NodeIndex> id2idx;
   std::vector<NodeId> idx2id = {0};
   NodeIndex idx = 1;
   std::vector<std::vector<Edge>> edge = {std::vector<Edge>()};
