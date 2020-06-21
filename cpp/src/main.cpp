@@ -32,8 +32,8 @@ NodeIndex get_idx(NodeId id) {
 }
 
 void add_edge(NodeId start, NodeId end, Distance distance) {
-  NodeIndex s = get_idx(start);
-  NodeIndex e = get_idx(end);
+  const NodeIndex s = get_idx(start);
+  const NodeIndex e = get_idx(end);
   g.edge[s].push_back({e, distance});
 }
 
@@ -75,7 +75,7 @@ void load() {
     float d = 0;
     for (int idx=0, pos=0, prev_pos=0; pos <= line.length(); pos++) {
       if (line[pos] == ',' || pos == line.length()) {
-        auto field = line.substr(prev_pos, pos-prev_pos);
+        const auto field = line.substr(prev_pos, pos-prev_pos);
         switch (idx) {
           case 2: s = stoi(field); break;
           case 3: e = stoi(field); break;
@@ -95,10 +95,10 @@ void load() {
 using Visit = std::pair<Distance, NodeIndex>;
 
 std::pair<Distance, std::vector<NodeId>> dijkstra(NodeId start, NodeId end) {
-  NodeIndex s = get_idx(start);
-  NodeIndex e = get_idx(end);
+  const NodeIndex s = get_idx(start);
+  const NodeIndex e = get_idx(end);
 
-  int size = g.idx;
+  const int size = g.idx;
   std::vector<Distance> d(size);
   std::vector<NodeIndex> prev(size);
 
@@ -107,15 +107,15 @@ std::pair<Distance, std::vector<NodeId>> dijkstra(NodeId start, NodeId end) {
 
   int visited = 0;
   while (!queue.empty()) {
-    auto a = queue.top();
+    const auto a = queue.top();
     queue.pop();
-    Distance distance = a.first;
-    NodeIndex here = a.second;
+    const Distance distance = a.first;
+    const NodeIndex here = a.second;
     if (is_debug) std::cout << "visiting: " << here << " distance: " << distance << std::endl;
     visited++;
-    for (Edge e : g.edge[here]) {
-      NodeIndex to = e.first;
-      Distance w = distance + e.second;
+    for (const Edge& e : g.edge[here]) {
+      const NodeIndex to = e.first;
+      const Distance w = distance + e.second;
       if (d[to] == 0 || w < d[to]) {
         prev[to] = here;
         d[to] = w;
@@ -143,7 +143,7 @@ int main(int argc, char **argv) {
   std::ios::sync_with_stdio(false);
   std::cin.tie(nullptr);
 
-  int count = atoi(argv[1]);
+  const int count = atoi(argv[1]);
   is_debug = argc > 2 && std::string(argv[2]) == "debug";
 
   load();
@@ -151,13 +151,13 @@ int main(int argc, char **argv) {
 
   std::pair<Distance, std::vector<NodeId>> result;
   for (int i=0; i<count; i++) {
-    NodeId s = g.idx2id[(i+1) * 1000];
+    const NodeId s = g.idx2id[(i+1) * 1000];
     result = dijkstra(s, g.idx2id[1]);
     std::cout << "distance: " << result.first << std::endl;
   }
 
   std::cout << "route: ";
-  for (NodeId id: result.second) {
+  for (const NodeId id: result.second) {
     std::cout << id << " ";
   }
   std::cout << std::endl;
