@@ -39,26 +39,25 @@ void add_edge(NodeId start, NodeId end, Distance distance) {
 }
 
 // 123.4567 --> 12345
-int stof100(const char *s) {
+int stof100(std::string_view s) {
   int result = 0;
-  int place = 0;
-  for (;*s != '\0'; s++) {
-    if (*s == '.') {
-      place = 1;
-      continue;
+  int place = 3;
+  auto it = s.cbegin();
+  const auto end = s.cend();
+  for(; it != end; ++it) {
+    if (*it == '.') {
+      ++it;
+      break;
     }
     result *= 10;
-    result += *s - '0';
-    if (place > 0) {
-      place++;
-      if (place >= 3) {
-          break;
-      }
-    }
+    result += *it - '0';
   }
-  while (place < 3) {
+  for(; it != end && place --> 0; ++it) {
     result *= 10;
-    place++;
+    result += *it - '0';
+  }
+  while(place --> 0) {
+    result *= 10;
   }
   return result;
 }
@@ -80,7 +79,7 @@ void load() {
         switch (idx) {
           case 2: s = stoi(field); break;
           case 3: e = stoi(field); break;
-          case 5: d = stof100(field.c_str()); break;
+          case 5: d = stof100(field); break;
         }
         prev_pos = pos+1;
         idx++;
