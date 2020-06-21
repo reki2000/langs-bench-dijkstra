@@ -9,7 +9,7 @@ using NodeIndex = int;
 using Distance = int;
 using Edge = std::pair<NodeIndex, Distance>;
 
-const int DISTANCE_MULTIPLE = 100;
+constexpr int DISTANCE_MULTIPLE = 100;
 
 bool is_debug = false;
 
