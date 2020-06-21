@@ -35,7 +35,7 @@ inline NodeIndex get_idx(NodeId id) {
 inline void add_edge(NodeId start, NodeId end, Distance distance) {
   const NodeIndex s = get_idx(start);
   const NodeIndex e = get_idx(end);
-  g.edge[s].push_back({e, distance});
+  g.edge[s].emplace_back(e, distance);
 }
 
 inline int stoi(std::string_view s) {
