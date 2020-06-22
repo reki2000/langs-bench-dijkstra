@@ -38,24 +38,25 @@ fun add_edge(start:NodeId, end:NodeId, distance:Distance) {
 
 fun stof100(s:String):Int {
 	var result = 0
-	var place = 0
+	var place = 2
+	var is_decimal_place = false
 	for (ch in s) {
 		if (ch == '.') {
-			place = 1
+			is_decimal_place = true
 			continue
 		}
 		result *= 10
 		result += ch - '0'
-		if (place > 0) {
-			place++
-			if (place >= 3) {
+		if (is_decimal_place) {
+			place--
+			if (place == 0) {
 				break;
 			}
 		}
 	}
-	while (place < 3) {
+	while (place > 0) {
 		result *= 10
-		place++
+		place--
 	}
 	return result;
 }
@@ -85,7 +86,7 @@ fun dijkstra(start:NodeId, end:NodeId):Result {
 	val e = get_idx(end)
 
 	val size = g.idx
-	val d = Array<Distance>(size) { 0 }
+	val d = Array<Distance>(size) { Int.MAX_VALUE }
 	val prev = Array<NodeIndex>(size) { 0 }
 
 	val queue = PriorityQueue()
@@ -94,12 +95,15 @@ fun dijkstra(start:NodeId, end:NodeId):Result {
 	var visited = 0
 	while (!queue.empty()) {
 		val (distance, here) = queue.pop()
+		if (distance > d[here]) {
+			continue
+		}
 		visited++
 		if (is_debug) println("visiting: " + here + " distance: " + distance)
 
 		for ((to, weight) in g.edge[here]) {
 			val w = distance + weight
-			if (d[to] == 0 || w < d[to]) {
+			if (w < d[to]) {
 				prev[to] = here
 				d[to] = w
 				queue.push(Visit(w, to))
@@ -111,7 +115,7 @@ fun dijkstra(start:NodeId, end:NodeId):Result {
 	var n = e
 	val result = mutableListOf(g.idx2id[n])
 
-	while (d[n] != 0 && n != s && n != 0) {
+	while (d[n] != Int.MAX_VALUE && n != s && n != 0) {
 		n = prev[n]
 		result.add(g.idx2id[n])
 	}
