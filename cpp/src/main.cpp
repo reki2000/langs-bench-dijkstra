@@ -82,8 +82,8 @@ void load() {
     }
     NodeId s = 0, e = 0;
     Distance d = 0;
-    for (int idx=0, pos=0, prev_pos=0; static_cast<std::string::size_type>(pos) <= line.length(); pos++) {
-      if (line[pos] == ',' || static_cast<std::string::size_type>(pos) == line.length()) {
+    for (std::string::size_type idx=0, pos=0, prev_pos=0; pos <= line.length(); pos++) {
+      if (line[pos] == ',' || pos == line.length()) {
         const auto field = std::string_view{line}.substr(prev_pos, pos-prev_pos);
         switch (idx) {
           case 2: s = stoi_unchecked(field); break;
