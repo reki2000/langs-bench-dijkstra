@@ -34,21 +34,23 @@ cdef add_edge(G g, int start, int end, distance):
 cdef int stof100(str s):
     cdef int result
     cdef int place
+    cdef int is_decimal_place
     result = 0
-    place = 0
+    place = 2
+    is_decimal_place = False
     for ch in s:
         if ch == '.':
-            place = 1
+            is_decimal_place = True
             continue
         result *= 10
         result += ord(ch) - ord('0')
-        if  place > 0:
-            place += 1
-            if place >= 3:
+        if is_decimal_place:
+            place -= 1
+            if place == 0:
                 break
-    while place < 3:
+    while place > 0:
         result *= 10
-        place += 1
+        place -= 1
     return result
 
 cdef tuple dijkstra(G g, int DISTANCE_MULTIPLE, is_debug, int start, int end):
@@ -57,6 +59,9 @@ cdef tuple dijkstra(G g, int DISTANCE_MULTIPLE, is_debug, int start, int end):
     s = get_idx(g, start)
     e = get_idx(g, end)
 
+    cdef int MAX_INT32
+    MAX_INT32 = 2147483647 # 2^31-1 - this is not the max value of python Number but good for this benchmark
+
     cdef int size
     cdef int[:] d
     cdef int[:] prev
@@ -64,7 +69,7 @@ cdef tuple dijkstra(G g, int DISTANCE_MULTIPLE, is_debug, int start, int end):
     d = cvarray(shape=(size,), itemsize=sizeof(int), format="i")
     prev = cvarray(shape=(size,), itemsize=sizeof(int), format="i")
     for i in range(size):
-        d[i] = 0
+        d[i] = MAX_INT32
         prev[i] = 0
     
     cdef list queue
@@ -81,23 +86,25 @@ cdef tuple dijkstra(G g, int DISTANCE_MULTIPLE, is_debug, int start, int end):
     cdef int w
     while len(queue) > 0:
         distance, here = heappop(queue)
+        if distance > d[here]:
+            continue
         visited = visited + 1
         if is_debug:
             print(f"visiting: {here} distance: {distance}")
         for to, weight in g.edge[here]:
             w = distance + weight
-            if d[to] == 0 or w < d[to]:
+            if w < d[to]:
                 prev[to] = here
                 d[to] = w
                 heappush(queue, (w, to))
-    print("visited:", visited)
+    print(f"visited: {visited}")
 
     cdef int n
     cdef list result
     n = e
     result = [g.idx2id[n]]
 
-    while d[n] != 0 and n != s and n != 0:
+    while d[n] != MAX_INT32 and n != s and n != 0:
         n = prev[n]
         result.append(g.idx2id[n])
 
@@ -121,13 +128,13 @@ cpdef main(count, is_debug):
     g = G()
     DISTANCE_MULTIPLE = 100
     load(g, is_debug)
-    print("loaded nodes:", g.idx)
+    print(f"loaded nodes: {g.idx}")
 
     route = []
     for i in range(1,count+1):
         s = g.idx2id[i*1000]
         distance, route = dijkstra(g, DISTANCE_MULTIPLE, is_debug, s, g.idx2id[1])
-        print("distance:", distance)
+        print(f"distance: {distance}")
 
     result = "route: "
     for id in route:
