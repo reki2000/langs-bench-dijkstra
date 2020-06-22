@@ -123,7 +123,7 @@ fn dijkstra(g: &G, start: NodeId, end: NodeId) -> (Distance, Vec<NodeId>) {
             let (to, weight) = (edge.first as usize, edge.second);
             let w = distance + weight;
             // println!("visiting:{} distance:{} to:{}, d[to]:{}, w:{}, qlen:{} visited:{}", here, distance, to, d[to], w, queue.len(), visited);
-            if d[to] == 0 || w < d[to] {
+            if w < d[to] {
                 prev[to] = here;
                 d[to] = w;
                 // vv[to] = vv[to] + 1;
