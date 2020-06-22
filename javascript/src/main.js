@@ -36,24 +36,25 @@ function add_edge(start, end, distance) {
 
 function stof100(s) {
 	let result = 0;
-	let place = 0;
+	let place = 2;
+	let is_decimal_place = false;
 	for (const ch of s) {
 	  if (ch == '.') {
-		place = 1;
+		is_decimal_place = true;
 		continue;
 	  }
 	  result *= 10;
 	  result += ch - '0';
-	  if (place > 0) {
-		place++;
-		if (place >= 3) {
+	  if (is_decimal_place) {
+		place--;
+		if (place == 0) {
 			break;
 		}
 	  }
 	}
-	while (place < 3) {
+	while (place > 0) {
 	  result *= 10;
-	  place++;
+	  place--;
 	}
 	return result;
 }
@@ -78,8 +79,9 @@ function dijkstra(start , end ) {
 	const s = get_idx(start);
 	const e = get_idx(end);
 
+	const MAX_INT32 = 2147483647; // 2^31-1 - this is not the max value of javascript Number but good for this benchmark
 	const size = g.idx;
-	const d = new Array(size+1).fill(0);
+	const d = new Array(size+1).fill(MAX_INT32); 
 	const prev = new Array(size+1).fill(0);
 
 	const queue = new pq();
@@ -88,12 +90,13 @@ function dijkstra(start , end ) {
 	let visited = 0;
 	while (!queue.Empty()) {
 		const [distance, here] = queue.Pop();
+		if (distance > d[here]) continue;
 		visited++;;
 		if (is_debug) console.log("visiting:", here, "distance:", distance);
 		for (let e of g.edge[here]) {
 			const to = e[0];
 			const w = distance + e[1];
-			if (d[to] === 0 || w < d[to]) {
+			if (w < d[to]) {
 				prev[to] = here;
 				d[to] = w;
 				queue.Push([w, to]);
@@ -105,7 +108,7 @@ function dijkstra(start , end ) {
 	let n = e;
 	let result = [n];
 
-	while (d[n] !== 0 && n !== s && n !== 0) {
+	while (d[n] !== MAX_INT32 && n !== s && n !== 0) {
 		n = prev[n];
 		result.push(g.idx2id[n]);
 	}

@@ -37,24 +37,25 @@ end
 
 function stof100(s::AbstractString)::Distance
     result::Distance = 0
-    place = 0
+    place = 2
+    is_decimal_place = false
     for ch in s
         if ch == '.'
-            place = 1
+            is_decimal_place = true
             continue
         end
         result *= 10
         result += ch - '0'
-        if place > 0
-            place += 1
-            if place >= 3
+        if is_decimal_place
+            place -= 1
+            if place == 0
                 break
             end
         end
     end
-    while place < 3
+    while place > 0
         result *= 10
-        place += 1
+        place -= 1
     end
     return result
 end
@@ -86,7 +87,7 @@ function dijkstra(g::G, start::NodeId, _end::NodeId, is_debug::Bool = false)::Re
     e = get_idx!(g, _end)
 
     size = g.idx
-    d = zeros(Distance, size)
+    d = fill(typemax(Distance), (size,1))
     prev = zeros(NodeIndex, size)
 
     queue = PriorityQueue([])
@@ -95,14 +96,17 @@ function dijkstra(g::G, start::NodeId, _end::NodeId, is_debug::Bool = false)::Re
     visited = 0
     @inbounds while ! empty(queue) 
         a = pop!(queue)
-        visited = visited + 1
         distance = a.first
         here = a.second
+        if distance > d[here]
+            continue
+        end
+        visited = visited + 1
         is_debug && println("visiting: $(here) distance: $(distance)")
         for e in g.edge[here] 
             to = e.first
             w = distance + e.second
-            if d[to] == 0 || w < d[to] 
+            if w < d[to] 
                 prev[to] = here
                 d[to] = w
                 push!(queue, Visit(w, to))
@@ -114,7 +118,7 @@ function dijkstra(g::G, start::NodeId, _end::NodeId, is_debug::Bool = false)::Re
     n = e
     result = [g.idx2id[n]]
 
-    while d[n] != 0 && n != s && n != 0 
+    while d[n] != typemax(Distance) && n != s && n != 0 
         n = prev[n]
         push!(result, g.idx2id[n])
     end

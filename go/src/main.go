@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/csv"
 	"fmt"
+	"math"
 	"os"
 	"strconv"
 	"strings"
@@ -15,7 +16,7 @@ type Edge struct {
 
 type NodeId int
 type NodeIndex int
-type Distance int
+type Distance int32
 
 var is_debug = false
 
@@ -55,24 +56,25 @@ func add_edge(start NodeId, end NodeId, distance Distance) {
 
 func stof100(s string) int {
 	result := 0
-	place := 0
+	place := 2
+	is_decimal_part := false
 	for _, ch := range s {
 		if ch == '.' {
-			place = 1
+			is_decimal_part = true
 			continue
 		}
 		result *= 10
 		result += int(ch) - int('0')
-		if place > 0 {
-			place++
-			if place >= 3 {
+		if is_decimal_part {
+			place--
+			if place == 0 {
 				break
 			}
 		}
 	}
-	for place < 3 {
+	for place > 0 {
 		result *= 10
-		place++
+		place--
 	}
 	return result
 }
@@ -106,7 +108,11 @@ func dijkstra(start NodeId, end NodeId) (Distance, []NodeId) {
 	e := get_idx(end)
 
 	size := g.idx
+
 	d := make([]Distance, size)
+	for i, _ := range d {
+		d[i] = math.MaxInt32
+	}
 	prev := make([]NodeIndex, size)
 
 	queue := NewPriorityQueue()
@@ -117,6 +123,9 @@ func dijkstra(start NodeId, end NodeId) (Distance, []NodeId) {
 		a := queue.Pop()
 		distance := a.first
 		here := a.second
+		if distance > d[here] {
+			continue
+		}
 		if is_debug {
 			fmt.Println("visiting:", here, "distance:", distance)
 		}
@@ -124,7 +133,7 @@ func dijkstra(start NodeId, end NodeId) (Distance, []NodeId) {
 		for _, e := range g.edge[here] {
 			to := e.first
 			w := distance + e.second
-			if d[to] == 0 || w < d[to] {
+			if w < d[to] {
 				prev[to] = here
 				d[to] = w
 				queue.Push(Visit{w, to})
@@ -136,7 +145,7 @@ func dijkstra(start NodeId, end NodeId) (Distance, []NodeId) {
 	n := e
 	result := []NodeId{g.idx2id[n]}
 
-	for d[n] != 0 && n != s && n != 0 {
+	for d[n] != math.MaxInt32 && n != s && n != 0 {
 		n = prev[n]
 		result = append(result, g.idx2id[n])
 	}
