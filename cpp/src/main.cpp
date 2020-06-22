@@ -50,7 +50,7 @@ inline int stoi_unchecked(std::string_view s) {
 // 123.4567 --> 12345
 inline int stof100(std::string_view s) {
   int result = 0;
-  int place = 3;
+  int place = 2;
   auto it = s.cbegin();
   const auto end = s.cend();
   for(; it != end; ++it) {
@@ -61,11 +61,11 @@ inline int stof100(std::string_view s) {
     result *= 10;
     result += *it - '0';
   }
-  for(; it != end && place --> 0; ++it) {
+  for(; it != end && place-- > 0; ++it) {
     result *= 10;
     result += *it - '0';
   }
-  while(place --> 0) {
+  while(place-- > 0) {
     result *= 10;
   }
   return result;
@@ -80,10 +80,11 @@ void load() {
     if (std::cin.eof()) {
       break;
     }
+    while (!isgraph(line.back())) line.pop_back(); // strip
     NodeId s = 0, e = 0;
     Distance d = 0;
     for (std::string::size_type idx=0, pos=0, prev_pos=0; pos <= line.length(); pos++) {
-      if (line[pos] == ',' || pos == line.length()) {
+      if (line[pos] == ',' || line[pos] == '\r' || pos == line.length()) {
         const auto field = std::string_view{line}.substr(prev_pos, pos-prev_pos);
         switch (idx) {
           case 2: s = stoi_unchecked(field); break;
@@ -109,6 +110,7 @@ inline std::pair<Distance, std::vector<NodeId>> dijkstra(NodeId start, NodeId en
 
   const int size = g.idx;
   std::vector<Distance> d(size);
+  std::fill(d.begin(),d.end(),INT32_MAX);
   std::vector<NodeIndex> prev(size);
 
   std::priority_queue<Visit, std::vector<Visit>, std::greater<Visit>> queue;
@@ -120,12 +122,14 @@ inline std::pair<Distance, std::vector<NodeId>> dijkstra(NodeId start, NodeId en
     queue.pop();
     const Distance distance = a.first;
     const NodeIndex here = a.second;
+    if (distance > d[here]) continue;
     if (is_debug) std::cout << "visiting: " << here << " distance: " << distance << std::endl;
     visited++;
+
     for (const Edge& e : g.edge[here]) {
       const NodeIndex to = e.first;
       const Distance w = distance + e.second;
-      if (d[to] == 0 || w < d[to]) {
+      if (w < d[to]) {
         prev[to] = here;
         d[to] = w;
         queue.push({w, to});
@@ -139,7 +143,7 @@ inline std::pair<Distance, std::vector<NodeId>> dijkstra(NodeId start, NodeId en
   NodeIndex n = e;
   result.push_back(g.idx2id[n]);
 
-  while (d[n] != 0 && n != s && n != 0) {
+  while (d[n] != INT32_MAX && n != s && n != 0) {
     n = prev[n];
     result.push_back(g.idx2id[n]);
   }
