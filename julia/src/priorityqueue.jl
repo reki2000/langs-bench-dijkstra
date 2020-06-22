@@ -2,7 +2,7 @@ import Base.pop!
 
 const NodeId = UInt32
 const NodeIndex = UInt32
-const Distance = UInt32
+const Distance = Int32
 
 struct Visit
 	first::Distance
