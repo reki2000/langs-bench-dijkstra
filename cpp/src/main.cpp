@@ -6,6 +6,7 @@
 #include<queue>
 #include<cstdint>
 #include<limits>
+#include"robin_hood.h"
 
 using NodeId = int;
 using NodeIndex = int;
@@ -17,7 +18,7 @@ constexpr int DISTANCE_MULTIPLE = 100;
 bool is_debug = false;
 
 struct G {
-  std::unordered_map<NodeId,NodeIndex> id2idx;
+  robin_hood::unordered_map<NodeId,NodeIndex> id2idx;
   std::vector<NodeId> idx2id = {0};
   NodeIndex idx = 1;
   std::vector<std::vector<Edge>> edge = {std::vector<Edge>()};

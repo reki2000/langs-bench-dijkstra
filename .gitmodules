@@ -1,0 +1,3 @@
+[submodule "cpp/external_projects/robin-hood-hashing"]
+	path = cpp/external_projects/robin-hood-hashing
+	url = https://github.com/martinus/robin-hood-hashing
