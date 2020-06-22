@@ -81,6 +81,7 @@ func stof100(s string) int {
 
 func load() {
 	reader := csv.NewReader(os.Stdin)
+	reader.ReuseRecord = true
 	line, err := reader.Read() // skip header
 
 	for {
