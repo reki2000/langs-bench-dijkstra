@@ -7,11 +7,11 @@ use std::io::prelude::*;
 
 use rustc_hash::FxHashMap;
 
-type NodeId = u32;
-type NodeIndex = u32;
-type Distance = u32;
+type NodeId = i32;
+type NodeIndex = i32;
+type Distance = i32;
 
-const DISTANCE_MULTIPLE: u32 = 100;
+const DISTANCE_MULTIPLE: i32 = 100;
 
 struct Edge {
     first: NodeIndex,
@@ -46,26 +46,27 @@ fn add_edge(g: &mut G, start: NodeId, end: NodeId, distance: Distance) {
     });
 }
 
-fn stof100(s: &str) -> u32 {
-    let mut result = 0;
-    let mut place = 0u32;
+fn stof100(s: &str) -> Distance {
+    let mut result = 0 as Distance;
+    let mut place = 2;
+    let mut is_decimal_place = false;
     for ch in s.chars() {
         if ch == '.' {
-            place = 1;
+            is_decimal_place = true;
             continue;
         }
         result *= 10;
-        result += (ch as u32) - ('0' as u32);
-        if place > 0 {
-            place += 1;
-            if place >= 3 {
+        result += (ch as i32) - ('0' as i32);
+        if is_decimal_place {
+            place -= 1;
+            if place == 0 {
                 break;
             }
         }
     }
-    while place < 3 {
+    while place > 0 {
         result *= 10;
-        place += 1;
+        place -= 1;
     }
     result
 }
@@ -74,10 +75,10 @@ fn load(g: &mut G) -> Result<(), Box<dyn Error>> {
     for line in io::stdin().lock().lines().skip(1) {
         let line = line?;
         let mut fields = line.split(',').skip(2);
-        let s: u32 = fields.next().unwrap().parse()?;
-        let e: u32 = fields.next().unwrap().parse()?;
+        let s: NodeId = fields.next().unwrap().parse()?;
+        let e: NodeId = fields.next().unwrap().parse()?;
         fields.next().unwrap();
-        let d = stof100(fields.next().unwrap());
+        let d: Distance = stof100(fields.next().unwrap());
         unsafe {
             if IS_DEBUG {
                 println!("line: {} s: {} e: {} D: {}", line, s, e, d);
@@ -96,7 +97,7 @@ fn dijkstra(g: &G, start: NodeId, end: NodeId) -> (Distance, Vec<NodeId>) {
     let e = *g.id2idx.get(&end).unwrap();
 
     let size = g.idx as usize;
-    let mut d = vec![0 as Distance; size];
+    let mut d = vec![i32::max_value() as Distance; size];
     let mut prev = vec![0 as NodeIndex; size];
 
     //let mut vv = vec![0; size];
@@ -107,6 +108,9 @@ fn dijkstra(g: &G, start: NodeId, end: NodeId) -> (Distance, Vec<NodeId>) {
     let mut visited = 0;
     while let Some(v) = queue.pop() {
         let (Reverse(distance), Reverse(here)) = (v.0, v.1);
+        if distance > d[here as usize] {
+            continue;
+        }
         unsafe {
             if IS_DEBUG {
                 println!("visiting: {} distance: {}", here, distance);
@@ -132,7 +136,7 @@ fn dijkstra(g: &G, start: NodeId, end: NodeId) -> (Distance, Vec<NodeId>) {
     let mut n = e;
     let mut result = vec![g.idx2id[n as usize]];
 
-    while d[n as usize] != 0 && n != s && n != 0 {
+    while d[n as usize] != i32::max_value() && n != s && n != 0 {
         n = prev[n as usize];
         result.push(g.idx2id[n as usize]);
     }
