@@ -75,20 +75,21 @@ inline int stof100(std::string_view s) {
 }
 
 void load() {
-  std::string line;
-  std::getline(std::cin, line); // skip header
+  std::string line_buf;
+  std::getline(std::cin, line_buf); // skip header
 
   while (true) {
-    std::getline(std::cin, line);
+    std::getline(std::cin, line_buf);
     if (std::cin.eof()) {
       break;
     }
-    while (!isgraph(line.back())) line.pop_back(); // strip
+    std::string_view line(line_buf);
+    while (!isgraph(line.back())) line.remove_suffix(1); // strip
     NodeId s, e;
     Distance d;
     for (std::string::size_type idx=0, pos=0, prev_pos=0; pos <= line.length(); pos++) {
       if (line[pos] == ',' || pos == line.length()) {
-        const auto field = std::string_view{line}.substr(prev_pos, pos-prev_pos);
+        const auto field = line.substr(prev_pos, pos-prev_pos);
         switch (idx) {
           case 2: s = stoi_unchecked(field); break;
           case 3: e = stoi_unchecked(field); break;
