@@ -33,20 +33,21 @@ def add_edge(start, end, distance):
 # .5 -> 50
 def stof100(s):
 	result = 0
-	place = 0
+	place = 2
+	is_decimal_place = False
 	for ch in s:
 		if ch == '.':
-			place = 1
+			is_decimal_place = True
 			continue
 		result *= 10
 		result += ord(ch) - ord('0')
-		if  place > 0:
-			place += 1
-			if place >= 3:
+		if is_decimal_place:
+			place -= 1
+			if place == 0:
 				break
-	while place < 3:
+	while place > 0:
 		result *= 10
-		place += 1
+		place -= 1
 	return result
 
 
@@ -67,8 +68,9 @@ def dijkstra(start, end):
 	s = get_idx(start)
 	e = get_idx(end)
 
+	MAX_INT32 = 2147483647 # 2^31-1 - this is not the max value of python Number but good for this benchmark
 	size = g.idx
-	d = [0] * size
+	d = [MAX_INT32] * size
 	prev = [0] * size
 
 	queue = []
@@ -77,12 +79,14 @@ def dijkstra(start, end):
 	visited = 0
 	while len(queue) > 0:
 		distance, here = heappop(queue)
-		visited = visited + 1
+		if distance > d[here]:
+			continue
+		visited += 1
 		if is_debug:
 			print(f"visiting: {here} distance: {distance}")
 		for to, weight in g.edge[here]:
 			w = distance + weight
-			if d[to] == 0 or w < d[to]:
+			if w < d[to]:
 				prev[to] = here
 				d[to] = w
 				heappush(queue, (w, to))
@@ -91,7 +95,7 @@ def dijkstra(start, end):
 	n = e
 	result = [g.idx2id[n]]
 
-	while d[n] != 0 and n != s and n != 0:
+	while d[n] != MAX_INT32 and n != s and n != 0:
 		n = prev[n]
 		result.append(g.idx2id[n])
 
