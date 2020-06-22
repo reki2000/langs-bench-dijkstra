@@ -83,8 +83,8 @@ void load() {
       break;
     }
     while (!isgraph(line.back())) line.pop_back(); // strip
-    NodeId s = 0, e = 0;
-    Distance d = 0;
+    NodeId s, e;
+    Distance d;
     for (std::string::size_type idx=0, pos=0, prev_pos=0; pos <= line.length(); pos++) {
       if (line[pos] == ',' || line[pos] == '\r' || pos == line.length()) {
         const auto field = std::string_view{line}.substr(prev_pos, pos-prev_pos);
