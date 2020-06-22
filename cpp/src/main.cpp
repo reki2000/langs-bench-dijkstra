@@ -5,6 +5,7 @@
 #include<iostream>
 #include<queue>
 #include<cstdint>
+#include<limits>
 
 using NodeId = int;
 using NodeIndex = int;
@@ -110,7 +111,7 @@ inline std::pair<Distance, std::vector<NodeId>> dijkstra(NodeId start, NodeId en
   const NodeIndex e = get_idx(end);
 
   const int size = g.idx;
-  std::vector<Distance> d(size, INT32_MAX);
+  std::vector<Distance> d(size, std::numeric_limits<Distance>::max());
   std::vector<NodeIndex> prev(size);
 
   std::priority_queue<Visit, std::vector<Visit>, std::greater<Visit>> queue;
@@ -143,7 +144,7 @@ inline std::pair<Distance, std::vector<NodeId>> dijkstra(NodeId start, NodeId en
   NodeIndex n = e;
   result.push_back(g.idx2id[n]);
 
-  while (d[n] != INT32_MAX && n != s && n != 0) {
+  while (d[n] != std::numeric_limits<Distance>::max() && n != s && n != 0) {
     n = prev[n];
     result.push_back(g.idx2id[n]);
   }
