@@ -110,8 +110,7 @@ inline std::pair<Distance, std::vector<NodeId>> dijkstra(NodeId start, NodeId en
   const NodeIndex e = get_idx(end);
 
   const int size = g.idx;
-  std::vector<Distance> d(size);
-  std::fill(d.begin(),d.end(),INT32_MAX);
+  std::vector<Distance> d(size, INT32_MAX);
   std::vector<NodeIndex> prev(size);
 
   std::priority_queue<Visit, std::vector<Visit>, std::greater<Visit>> queue;
