@@ -1,5 +1,5 @@
 # langs-bench-dijkstra
-Simple benchmarks of Dijkstra algorithm among C++, Go, Julia, Python, JavaScript, Rust and Kotlin.
+Simple benchmarks of Dijkstra algorithm among C++, Go, Julia, Python(+Cython), JavaScript, Rust and Kotlin.
 
 # Requirement
 
@@ -13,7 +13,7 @@ And runs on languages below:
 - Julia : 1.4
 - Clang : 7 (or versions which support C++17)
 
-I like to use [asdf](https://asdf-vm.com/#/) to set up those environments.
+I like using [asdf](https://asdf-vm.com/#/) to set up those environments.
 
 ```setup.sh
 while read lang plugin version dummy; do
@@ -23,6 +23,7 @@ while read lang plugin version dummy; do
 done <<EOT
 go golang 1.14.2
 python python 3.8.2
+cython python 3.8.2
 kotlin java adopt-openjdk-14.0.1+7
 kotlin kotlin 1.3.72
 rust rust 1.44.0
@@ -50,5 +51,5 @@ for all languages
 
 for specific language
 ```
-./run.sh [cpp|go|rust|javascript|julia|kotlin]
+./run.sh [cpp|go|rust|javascript|julia|kotlin|python|cython]
 ```
