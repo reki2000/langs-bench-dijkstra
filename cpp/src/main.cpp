@@ -38,7 +38,7 @@ inline void add_edge(NodeId start, NodeId end, Distance distance) {
   g.edge[s].emplace_back(e, distance);
 }
 
-inline int stoi(std::string_view s) {
+inline int stoi_unchecked(std::string_view s) {
   int result = 0;
   for(auto&& x : s) {
     result *= 10;
@@ -86,8 +86,8 @@ void load() {
       if (line[pos] == ',' || static_cast<std::string::size_type>(pos) == line.length()) {
         const auto field = std::string_view{line}.substr(prev_pos, pos-prev_pos);
         switch (idx) {
-          case 2: s = stoi(field); break;
-          case 3: e = stoi(field); break;
+          case 2: s = stoi_unchecked(field); break;
+          case 3: e = stoi_unchecked(field); break;
           case 5: d = stof100(field); break;
         }
         prev_pos = pos+1;
