@@ -4,10 +4,11 @@
 #include<string_view>
 #include<iostream>
 #include<queue>
+#include<cstdint>
 
 using NodeId = int;
 using NodeIndex = int;
-using Distance = int;
+using Distance = std::int32_t;
 using Edge = std::pair<NodeIndex, Distance>;
 
 constexpr int DISTANCE_MULTIPLE = 100;
