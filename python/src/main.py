@@ -32,15 +32,8 @@ def add_edge(start, end, distance):
 # 123.4 -> 12340
 # .5 -> 50
 def stof100(s):
-	pair = s.split('.', 1)
-	if len(pair) == 1:
-		return int(pair[0] or 0) * 100
-	s1, s2 = pair
-	if len(s2) >= 2:
-		v = int(s2[0:2])
-	else:
-		v = int(s2 or 0) * 10
-	return int(s1 or 0) * 100 + v
+	#return int(float(s) * 100)        # test failed
+	return int(float(s) * 1000) // 10  # test passed
 
 def load():
 	sys.stdin.readline()
