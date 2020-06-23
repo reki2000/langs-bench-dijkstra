@@ -53,7 +53,7 @@ def stof100(s):
 
 def load():
 	sys.stdin.readline()
-	for line in sys.stdin.readlines():
+	for line in sys.stdin:
 		line = line.strip()
 		data = line.split(",")
 		# println(data)
