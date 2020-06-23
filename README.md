@@ -8,6 +8,8 @@ You need to `git submodule update --init --recursive` at first.
 
 This benchmark uses [hyperfine](https://github.com/sharkdp/hyperfine).
 
+To plot the benchmark results, needs `pip install numpy matplotlib  # pip3, if you are using python3b`
+
 And runs on languages below:
 - Go : 1.14
 - Rust : 1.44

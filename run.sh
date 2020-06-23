@@ -1,23 +1,29 @@
 #!/bin/bash
 
-function bench {
-  hyperfine --warmup 1 "./bench.sh 20 < ../data/Tokyo_Edgelist.csv"
-}
-
-function measure {
-  local lang=$1
-  echo "Testing $lang..."
-  pushd $lang > /dev/null
-  make -i clean > /dev/null && make > /dev/null
-  bench
-  popd > /dev/null
-}
 set -e
 
+function bench {
+  [ ! -d out ] && mkdir out
+  hyperfine --warmup 1 -L lang "$1" 'cd {lang}; ./bench.sh 20 < ../data/Tokyo_Edgelist.csv' --export-json out/result.json
+  python plot_whisker.py --labels "$1" --savefile out/result.png out/result.json 
+}
+
+function build {
+  local lang=$1
+  echo "Building $lang..."
+  pushd $lang
+  make -i clean && make
+  popd
+  echo ""
+}
+
 if [ -n "$1" ]; then
-  measure $1
-else 
-  for lang in cpp go rust javascript julia kotlin python; do
-    measure $lang
-  done
+  langs="$1"
+else
+  langs="cpp go rust javascript julia kotlin python cython pypy"
 fi
+
+for lang in $(echo $langs); do
+  build $lang
+done
+bench ${langs// /,}
