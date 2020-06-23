@@ -26,15 +26,6 @@ def add_edge(start, end, distance):
 	e = get_idx(end)
 	g.edge[s].append((e, distance))
 
-# 123.45 -> 12345
-# 123.4599 -> 12345
-# 123 -> 12300
-# 123.4 -> 12340
-# .5 -> 50
-def stof100(s):
-	#return int(float(s) * 100)        # test failed
-	return int(float(s) * 1000) // 10  # test passed
-
 def load():
 	sys.stdin.readline()
 	for line in sys.stdin:
@@ -43,7 +34,8 @@ def load():
 		# println(data)
 		s = int(data[2])
 		e = int(data[3])
-		d = stof100(data[5])
+		#d = int(float(data[5]) * 100)         # test failed
+		d = int(float(data[5]) * 1000) // 10   # test passed
 		if is_debug:
 			print(f"line: {line} s: {s} e: {e} D: {d}")
 		add_edge(s, e, d)
