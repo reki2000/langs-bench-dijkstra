@@ -45,9 +45,8 @@ def stof100(s):
 			place -= 1
 			if place == 0:
 				break
-	while place > 0:
-		result *= 10
-		place -= 1
+	if place > 0:  # omittable, because 10**0 == 1
+		result *= (10 ** place)
 	return result
 
 
