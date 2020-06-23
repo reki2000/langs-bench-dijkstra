@@ -1,5 +1,8 @@
 #!/bin/bash
 
+set -e    # exit when command failed
+set -u    # exit when non-initalized variable found
+
 function check {
   local lang=$1
   echo "Testing $lang..."
@@ -9,8 +12,6 @@ function check {
   popd > /dev/null
   diff -u out/expected.txt out/$lang.txt | head
 }
-
-set -e
 
 if [ -n "$1" ]; then
   for lang in "$@"; do
