@@ -115,7 +115,7 @@ inline std::pair<Distance, std::vector<NodeId>> dijkstra(NodeId start, NodeId en
   std::vector<Distance> d(size, std::numeric_limits<Distance>::max());
   std::vector<NodeIndex> prev(size);
 
-  std::priority_queue<Visit, std::vector<Visit>, std::greater<Visit>> queue;
+  std::priority_queue<Visit, std::vector<Visit>, std::greater<>> queue;
   queue.push({0,s});
 
   int visited = 0;
