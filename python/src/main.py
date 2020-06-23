@@ -77,7 +77,7 @@ def dijkstra(start, end):
 	heappush(queue, (0, s))
 
 	visited = 0
-	while len(queue) > 0:
+	while queue:
 		distance, here = heappop(queue)
 		if distance > d[here]:
 			continue
