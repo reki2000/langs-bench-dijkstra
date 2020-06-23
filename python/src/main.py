@@ -115,9 +115,8 @@ def main():
 		distance, route = dijkstra(s, g.idx2id[1])
 		print("distance:", distance)
 
-	result = "route: "
-	for id in route:
-		result = result + str(id) + " "
-	print(result)
+	result = " ".join( str(id) for id in route )
+	print("route: " + result + " ")  # original code has a small bug which prints tailing space
+	#print("route:", result)
 
 main()
