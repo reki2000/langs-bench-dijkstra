@@ -57,3 +57,15 @@ for specific language
 ```
 ./run.sh [cpp|go|rust|javascript|julia|kotlin|python|cython|pypy]
 ```
+
+for test setup
+```
+mkdir out
+./test.sh cpp # choose one implementation to make 'correct' result
+mv out/cpp.txt out/expect.txt
+```
+
+for test
+```
+./test.sh [cpp|go|rust|javascript|julia|kotlin|python|cython|pypy]
+```
