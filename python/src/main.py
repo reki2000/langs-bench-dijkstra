@@ -45,15 +45,14 @@ def stof100(s):
 			place -= 1
 			if place == 0:
 				break
-	while place > 0:
-		result *= 10
-		place -= 1
+	if place > 0:  # omittable, because 10**0 == 1
+		result *= (10 ** place)
 	return result
 
 
 def load():
 	sys.stdin.readline()
-	for line in sys.stdin.readlines():
+	for line in sys.stdin:
 		line = line.strip()
 		data = line.split(",")
 		# println(data)
@@ -64,20 +63,22 @@ def load():
 			print(f"line: {line} s: {s} e: {e} D: {d}")
 		add_edge(s, e, d)
 
+MAX_INT32 = 2147483647 # 2^31-1 - this is not the max value of python Number but good for this benchmark
+
 def dijkstra(start, end):
 	s = get_idx(start)
 	e = get_idx(end)
 
-	MAX_INT32 = 2147483647 # 2^31-1 - this is not the max value of python Number but good for this benchmark
+	max_int = MAX_INT32
 	size = g.idx
-	d = [MAX_INT32] * size
+	d = [max_int] * size
 	prev = [0] * size
 
 	queue = []
 	heappush(queue, (0, s))
 
 	visited = 0
-	while len(queue) > 0:
+	while queue:
 		distance, here = heappop(queue)
 		if distance > d[here]:
 			continue
@@ -95,11 +96,11 @@ def dijkstra(start, end):
 	n = e
 	result = [g.idx2id[n]]
 
-	while d[n] != MAX_INT32 and n != s and n != 0:
+	while d[n] != max_int and n != s and n:
 		n = prev[n]
 		result.append(g.idx2id[n])
 
-	return int(d[e] / DISTANCE_MULTIPLE), result
+	return d[e] // DISTANCE_MULTIPLE, result  # 'x // y' is equvarent to 'int(x/y)'
 
 def main():
 	count = int(sys.argv[1])
@@ -115,9 +116,8 @@ def main():
 		distance, route = dijkstra(s, g.idx2id[1])
 		print("distance:", distance)
 
-	result = "route: "
-	for id in route:
-		result = result + str(id) + " "
-	print(result)
+	result = " ".join( str(id) for id in route )
+	print("route: " + result + " ")  # original code has a small bug which prints tailing space
+	#print("route:", result)
 
 main()
