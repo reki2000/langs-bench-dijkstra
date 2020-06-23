@@ -6,9 +6,11 @@ typealias NodeId = Int
 typealias NodeIndex = Int
 typealias Distance = Int
 
-val DISTANCE_MULTIPLE = 100
+const val DISTANCE_MULTIPLE = 100
 
 var is_debug = false
+
+val io = FastIO()
 
 class G(
 	var id2idx:MutableMap<NodeId,NodeIndex> = mutableMapOf<NodeId,NodeIndex>(),
@@ -62,18 +64,16 @@ fun stof100(s:String):Int {
 }
 
 fun load() {
-	readLine() // skip header
+	io.readStringList(6) // skip header
 
-	while (true) {
-		val line = readLine()
-		if (line == null) {
-			break
-		}
-		val fields = line.split(",")
-		val s = fields[2].toInt()
-		val e = fields[3].toInt()
-		val d = stof100(fields[5])
-		if (is_debug) println("line: " + line + " s: " + s + " e: " + e + " D: " + d)
+	while (io.hasNext()) {
+		io.readString() // skip 1st elem
+		io.readString() // skip 2nd elem
+		val s = io.readInt()
+		val e = io.readInt()
+		io.readString() // skip 5th elem
+		val d = stof100(io.readString())
+		if (is_debug) io.println("s: $s e: $e D: $d")
 		add_edge(s, e, d)
 	}
 }
@@ -99,7 +99,7 @@ fun dijkstra(start:NodeId, end:NodeId):Result {
 			continue
 		}
 		visited++
-		if (is_debug) println("visiting: " + here + " distance: " + distance)
+		if (is_debug) io.println("visiting: $here distance: $distance")
 
 		for ((to, weight) in g.edge[here]) {
 			val w = distance + weight
@@ -110,7 +110,7 @@ fun dijkstra(start:NodeId, end:NodeId):Result {
 			}
 		}
 	}
-	println("visited: "+ visited)
+	io.println("visited: $visited")
 
 	var n = e
 	val result = mutableListOf(g.idx2id[n])
@@ -124,11 +124,11 @@ fun dijkstra(start:NodeId, end:NodeId):Result {
 }
 
 fun main(args: Array<String>) {
-	val count = args[0].toInt() 
+	val count = args[0].toInt()
 	is_debug = args.size > 1 && args[1] == "debug"
 
 	load()
-	println("loaded nodes: " + g.idx)
+	io.println("loaded nodes: " + g.idx)
 
 	var distance: Distance
 	var route = listOf<NodeId>()
@@ -137,12 +137,13 @@ fun main(args: Array<String>) {
 		val result = dijkstra(s, g.idx2id[1])
 		distance = result.first
 		route = result.second
-		println("distance: " + distance)
+		io.println("distance: $distance")
 	}
 
-	print("route: ")
+	io.print("route: ")
 	for (id in route) {
-		print("" + id + " ")
+		io.print("$id ")
 	}
-	println()
+	io.println()
+	io.flush()
 }
