@@ -95,7 +95,7 @@ def dijkstra(start, end):
 	n = e
 	result = [g.idx2id[n]]
 
-	while d[n] != MAX_INT32 and n != s and n != 0:
+	while d[n] != MAX_INT32 and n != s and n:
 		n = prev[n]
 		result.append(g.idx2id[n])
 
