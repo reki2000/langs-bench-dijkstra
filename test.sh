@@ -5,7 +5,7 @@ function check {
   echo "Testing $lang..."
   pushd $lang > /dev/null
   make -i clean > /dev/null && make > /dev/null
-  ./bench.sh 1 debug < ../data/Tokyo_Edgelist.csv > ../out/$lang.txt 2>&1
+  ./bench.sh 1 debug < ../data/Tokyo_Edgelist.csv > ../out/$lang.txt
   popd > /dev/null
   diff -u out/expected.txt out/$lang.txt | head
 }
