@@ -99,7 +99,7 @@ def dijkstra(start, end):
 		n = prev[n]
 		result.append(g.idx2id[n])
 
-	return int(d[e] / DISTANCE_MULTIPLE), result
+	return d[e] // DISTANCE_MULTIPLE, result  # 'x // y' is equvarent to 'int(x/y)'
 
 def main():
 	count = int(sys.argv[1])
