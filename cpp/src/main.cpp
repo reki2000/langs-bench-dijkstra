@@ -85,20 +85,14 @@ void load() {
     }
     std::string_view line(line_buf);
     while (!isgraph(line.back())) line.remove_suffix(1); // strip
-    NodeId s, e;
-    Distance d;
-    for (std::string::size_type idx=0, pos=0, prev_pos=0; pos <= line.length(); pos++) {
-      if (line[pos] == ',' || pos == line.length()) {
-        const auto field = line.substr(prev_pos, pos-prev_pos);
-        switch (idx) {
-          case 2: s = stoi_unchecked(field); break;
-          case 3: e = stoi_unchecked(field); break;
-          case 5: d = stof100(field); break;
-        }
-        prev_pos = pos+1;
-        idx++;
-      }
-    }
+    const auto pos1 = line.find(',');
+    const auto pos2 = line.find(',', pos1 + 1);
+    const auto pos3 = line.find(',', pos2 + 1);
+    const auto pos4 = line.find(',', pos3 + 1);
+    const auto pos5 = line.find(',', pos4 + 1);
+    const NodeId s = stoi_unchecked(line.substr(pos2+1, pos3-pos2-1));
+    const NodeId e = stoi_unchecked(line.substr(pos3+1, pos4-pos3-1));
+    const Distance d = stof100(line.substr(pos5+1));
     if (is_debug) std::cout << "line: " << line << " s: " << s << " e: " << e << " D: " << d << std::endl;
     // cerr << "line:" << line << "s:" << s << " e:" << e << " d:" << d << endl;
     // std::this_thread::sleep_for(std::chrono::seconds(1));
