@@ -4,10 +4,13 @@
 #include<string_view>
 #include<iostream>
 #include<queue>
+#include<cstdint>
+#include<limits>
+#include"robin_hood.h"
 
 using NodeId = int;
 using NodeIndex = int;
-using Distance = int;
+using Distance = std::int32_t;
 using Edge = std::pair<NodeIndex, Distance>;
 
 constexpr int DISTANCE_MULTIPLE = 100;
@@ -15,7 +18,7 @@ constexpr int DISTANCE_MULTIPLE = 100;
 bool is_debug = false;
 
 struct G {
-  std::unordered_map<NodeId,NodeIndex> id2idx;
+  robin_hood::unordered_map<NodeId,NodeIndex> id2idx;
   std::vector<NodeId> idx2id = {0};
   NodeIndex idx = 1;
   std::vector<std::vector<Edge>> edge = {std::vector<Edge>()};
@@ -81,10 +84,10 @@ void load() {
       break;
     }
     while (!isgraph(line.back())) line.pop_back(); // strip
-    NodeId s = 0, e = 0;
-    Distance d = 0;
+    NodeId s, e;
+    Distance d;
     for (std::string::size_type idx=0, pos=0, prev_pos=0; pos <= line.length(); pos++) {
-      if (line[pos] == ',' || line[pos] == '\r' || pos == line.length()) {
+      if (line[pos] == ',' || pos == line.length()) {
         const auto field = std::string_view{line}.substr(prev_pos, pos-prev_pos);
         switch (idx) {
           case 2: s = stoi_unchecked(field); break;
@@ -109,8 +112,7 @@ inline std::pair<Distance, std::vector<NodeId>> dijkstra(NodeId start, NodeId en
   const NodeIndex e = get_idx(end);
 
   const int size = g.idx;
-  std::vector<Distance> d(size);
-  std::fill(d.begin(),d.end(),INT32_MAX);
+  std::vector<Distance> d(size, std::numeric_limits<Distance>::max());
   std::vector<NodeIndex> prev(size);
 
   std::priority_queue<Visit, std::vector<Visit>, std::greater<Visit>> queue;
@@ -143,7 +145,7 @@ inline std::pair<Distance, std::vector<NodeId>> dijkstra(NodeId start, NodeId en
   NodeIndex n = e;
   result.push_back(g.idx2id[n]);
 
-  while (d[n] != INT32_MAX && n != s && n != 0) {
+  while (d[n] != std::numeric_limits<Distance>::max() && n != s && n != 0) {
     n = prev[n];
     result.push_back(g.idx2id[n]);
   }

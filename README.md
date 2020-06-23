@@ -3,6 +3,9 @@ Simple benchmarks of Dijkstra algorithm among C++, Go, Julia, Python(+Cython), J
 
 # Requirement
 
+Submodules are contained.
+You need to `git submodule update --init --recursive` at first.
+
 This benchmark uses [hyperfine](https://github.com/sharkdp/hyperfine).
 
 And runs on languages below:
