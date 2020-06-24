@@ -3,9 +3,11 @@
 set -e
 
 function bench {
-  [ ! -d out ] && mkdir out
-  hyperfine --warmup 1 -L lang "$1" 'cd {lang}; ./bench.sh 20 < ../data/Tokyo_Edgelist.csv' --export-json out/result.json
-  python plot_whisker.py --labels "$1" --savefile out/result.png out/result.json 
+  local langs="$1"
+  for count in 0 20; do
+    hyperfine --warmup 1 -L lang "$langs" 'cd {lang}; ./bench.sh '${count}' < ../data/Tokyo_Edgelist.csv' --export-json out/result-${count}.json
+    python plot_whisker.py --labels "$langs" --savefile out/result-${count}.png out/result-${count}.json 
+  done
 }
 
 function build {
@@ -16,6 +18,9 @@ function build {
   popd
   echo ""
 }
+
+# create output directory
+[ ! -d out ] && mkdir out
 
 if [ -n "$1" ]; then
   langs="$1"
