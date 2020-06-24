@@ -70,9 +70,9 @@ fun load() {
 
 	while (true) {
 		val line = readLine() ?: break
-		val fields = line.split(",")
-		val s = fields[2].toInt()
-		val e = fields[3].toInt()
+		val fields = line.split(',')
+		val s = Integer.valueOf(fields[2])
+		val e = Integer.valueOf(fields[3])
 		val d = stof100(fields[5])
 		if (is_debug) pw.println("line: $line s: $s e: $e D: $d")
 		add_edge(s, e, d)
