@@ -1,5 +1,6 @@
 import sys
 from heapq import heappush, heappop
+from decimal import *
 
 class G:
 	id2idx = {}
@@ -26,30 +27,6 @@ def add_edge(start, end, distance):
 	e = get_idx(end)
 	g.edge[s].append((e, distance))
 
-# 123.45 -> 12345
-# 123.4599 -> 12345
-# 123 -> 12300
-# 123.4 -> 12340
-# .5 -> 50
-def stof100(s):
-	result = 0
-	place = 2
-	is_decimal_place = False
-	for ch in s:
-		if ch == '.':
-			is_decimal_place = True
-			continue
-		result *= 10
-		result += ord(ch) - ord('0')
-		if is_decimal_place:
-			place -= 1
-			if place == 0:
-				break
-	if place > 0:  # omittable, because 10**0 == 1
-		result *= (10 ** place)
-	return result
-
-
 def load():
 	sys.stdin.readline()
 	for line in sys.stdin:
@@ -58,7 +35,8 @@ def load():
 		# println(data)
 		s = int(data[2])
 		e = int(data[3])
-		d = stof100(data[5])
+		d = int(Decimal(data[5]) * 100)
+		#d = int((float(data[5])*1000)/10) # this also runs correctly, but in the case of *10000, this will make rounding error
 		if is_debug:
 			print(f"line: {line} s: {s} e: {e} D: {d}")
 		add_edge(s, e, d)
