@@ -66,16 +66,18 @@ fun stof100(s: String): Int {
 }
 
 fun load() {
-	readLine() // skip header
+	System.`in`.bufferedReader().use { reader ->
+		reader.readLine() // skip header
 
-	while (true) {
-		val line = readLine() ?: break
-		val fields = line.split(',')
-		val s = Integer.valueOf(fields[2])
-		val e = Integer.valueOf(fields[3])
-		val d = stof100(fields[5])
-		if (is_debug) pw.println("line: $line s: $s e: $e D: $d")
-		add_edge(s, e, d)
+		while (true) {
+			val line = reader.readLine() ?: break
+			val fields = line.split(',')
+			val s = Integer.valueOf(fields[2])
+			val e = Integer.valueOf(fields[3])
+			val d = stof100(fields[5])
+			if (is_debug) pw.println("line: $line s: $s e: $e D: $d")
+			add_edge(s, e, d)
+		}
 	}
 }
 
@@ -128,24 +130,21 @@ fun main(args: Array<String>) {
 	val count = args[0].toInt()
 	is_debug = args.size > 1 && args[1] == "debug"
 
-	load()
-	pw.println("loaded nodes: " + g.idx)
+	pw.use {
+		load()
+		pw.println("loaded nodes: ${g.idx}")
 
-	var distance: Distance
-	var route = listOf<NodeId>()
-	for (i in 1..count) {
-		val s = g.idx2id[i * 1000]
-		val result = dijkstra(s, g.idx2id[1])
-		distance = result.first
-		route = result.second
-		pw.println("distance: $distance")
-	}
+		var distance: Distance
+		var route = listOf<NodeId>()
+		for (i in 1..count) {
+			val s = g.idx2id[i * 1000]
+			val result = dijkstra(s, g.idx2id[1])
+			distance = result.first
+			route = result.second
+			pw.println("distance: $distance")
+		}
 
-	pw.print("route: ")
-	for (id in route) {
-		pw.print("$id ")
+		pw.println("route: ${route.joinToString(separator = " ", postfix = " ")}")
+		pw.flush()
 	}
-	pw.println()
-	pw.flush()
-	pw.close()
 }
