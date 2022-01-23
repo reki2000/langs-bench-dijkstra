@@ -17,6 +17,8 @@ And runs on languages below:
 - Kotlin : 1.3 + jdk >=8
 - Julia : 1.4
 - Clang : 7 (or versions which support C++17)
+- Dart : 2.15
+- Python : 3.8
 
 I like using [asdf](https://asdf-vm.com/#/) to set up those environments, except Clang.
 
@@ -35,6 +37,7 @@ kotlin kotlin 1.3.72
 rust rust 1.44.0
 julia julia 1.4.1
 javascript nodejs 13.13.0
+dart 2.15.1
 EOT
 asdf reshim
 ```
@@ -57,7 +60,7 @@ for all languages
 
 for specific language
 ```
-./run.sh [cpp|go|rust|javascript|julia|kotlin|python|cython|pypy]
+./run.sh [cpp|go|rust|javascript|julia|kotlin|python|cython|pypy|dart]
 ```
 
 for test setup
