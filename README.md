@@ -29,7 +29,7 @@ You need running environments for languages below:
 - Rust : 1.44
 - JavaScript : NodeJS 13 
 - Kotlin : 1.7 + jdk >= 18
-- Julia : 1.4
+- Julia : 1.7
 - Clang : 7 (or versions which support C++17)
 - Dart : 2.16.1
 - Python : 3.8
@@ -48,7 +48,7 @@ pypy python pypy3.6-7.3.1
 kotlin java
 kotlin kotlin
 rust rust 1.44.0
-julia julia 1.4.1
+julia julia
 javascript nodejs 13.13.0
 dart dart 2.16.1
 EOT
