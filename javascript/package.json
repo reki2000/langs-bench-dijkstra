@@ -8,6 +8,5 @@
         "start": "node index.js"
     },
     "dependencies": {
-        "csv-parse": "^5.3.0"
     }
 }
