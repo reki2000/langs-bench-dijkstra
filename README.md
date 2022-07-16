@@ -26,7 +26,7 @@ pip install numpy matplotlib
 
 You need running environments for languages below:
 - Go : 1.18
-- Rust : 1.44
+- Rust : 1.62
 - JavaScript : NodeJS 13 
 - Kotlin : 1.7 + jdk >= 18
 - Julia : 1.7
@@ -47,7 +47,7 @@ cython python
 pypy python
 kotlin java
 kotlin kotlin
-rust rust 1.44.0
+rust rust
 julia julia
 javascript nodejs 13.13.0
 dart dart 2.16.1
