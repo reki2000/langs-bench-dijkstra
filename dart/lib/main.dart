@@ -1,6 +1,7 @@
 import 'pair.dart';
 import 'priorityqueue.dart';
 import 'dart:io';
+import 'dart:convert';
 
 typedef NodeId = int;
 typedef NodeIndex = int;
@@ -10,7 +11,7 @@ typedef Edge = Pair<NodeIndex, Distance>;
 
 const DISTANCE_MULTIPLE = 100;
 
-var is_debug = false;
+var isDebug = false;
 
 class G {
   final id2idx = <NodeId, NodeIndex>{};
@@ -69,18 +70,28 @@ int stof100(String s) {
   return result;
 }
 
-void load() {
+Future<void> load() async {
   stdin.readLineSync();
-  while (true) {
-    final line = stdin.readLineSync();
-    if (line == null || line.isEmpty) {
-      break;
-    }
+
+  final lines = stdin.transform(utf8.decoder).transform(LineSplitter());
+
+  // var lineNo = 1;
+  // final sw = Stopwatch()..start();
+
+  await for (final line in lines) {
     final fields = line.split(',');
     final s = int.parse(fields[2]);
     final e = int.parse(fields[3]);
     final d = stof100(fields[5]);
-    if (is_debug) print("line: $line s: $s e: $e D: $d");
+
+    // if (lineNo % 100000 == 0 && isDebug) {
+    //   final elapsed = sw.elapsedMilliseconds;
+    //   sw.reset();
+
+    //   print("elapsed: $elapsed line: $line s: $s e: $e D: $d");
+    // }
+    // lineNo++;
+
     add_edge(s, e, d);
   }
 }
@@ -111,7 +122,7 @@ Result dijkstra(NodeId start, end) {
       continue;
     }
     visited++;
-    if (is_debug) print("visiting: $here distance: $distance");
+    if (isDebug) print("visiting: $here distance: $distance");
 
     for (final pop in g.edge[here]) {
       final to = pop.first;
@@ -138,11 +149,11 @@ Result dijkstra(NodeId start, end) {
   return Result(d[e] ~/ DISTANCE_MULTIPLE, result);
 }
 
-void main(List<String> args) {
+void main(List<String> args) async {
   final count = int.parse(args[0]);
-  is_debug = args.length > 1 && args[1] == "debug";
+  isDebug = args.length > 1 && args[1] == "debug";
 
-  load();
+  await load();
   print("loaded nodes: ${g.idx}");
 
   Distance distance;
