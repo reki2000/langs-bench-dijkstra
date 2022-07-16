@@ -139,7 +139,7 @@ inline std::pair<Distance, std::vector<NodeId>> dijkstra(NodeId start, NodeId en
     }
   }
 
-  std::cerr << "visited: " << visited << std::endl;
+  std::cout << "visited: " << visited << std::endl;
 
   std::vector<NodeId> result;
   NodeIndex n = e;
@@ -162,7 +162,7 @@ int main(int argc, char **argv) {
   is_debug = argc > 2 && std::string_view(argv[2]) == "debug";
 
   load();
-  std::cerr << "loaded nodes: " << g.idx << std::endl;
+  std::cout << "loaded nodes: " << g.idx << std::endl;
 
   std::pair<Distance, std::vector<NodeId>> result;
   for (int i=0; i<count; i++) {
