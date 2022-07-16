@@ -1,6 +1,7 @@
 # Files and directories created by pub.
 .dart_tool/
 .packages
+.analysis_options.yaml
 
 # Conventional directory for build output.
 bin/
