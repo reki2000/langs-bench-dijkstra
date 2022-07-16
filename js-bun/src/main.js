@@ -126,7 +126,6 @@ async function main() {
 	is_debug = process.argv.length > 3 && process.argv[3] == 'debug';
 
 	await load();
-	console.log("loaded nodes:", g.idx);
 
 	let distance = 0, route = [];
 	for (let i = 1; i <= count; i++) {
@@ -142,4 +141,4 @@ async function main() {
 	console.log(line);
 }
 
-main();
+await main();
