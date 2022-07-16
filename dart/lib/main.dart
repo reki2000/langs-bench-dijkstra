@@ -75,22 +75,15 @@ Future<void> load() async {
 
   final lines = stdin.transform(utf8.decoder).transform(LineSplitter());
 
-  // var lineNo = 1;
-  // final sw = Stopwatch()..start();
-
   await for (final line in lines) {
     final fields = line.split(',');
     final s = int.parse(fields[2]);
     final e = int.parse(fields[3]);
     final d = stof100(fields[5]);
 
-    // if (lineNo % 100000 == 0 && isDebug) {
-    //   final elapsed = sw.elapsedMilliseconds;
-    //   sw.reset();
-
-    //   print("elapsed: $elapsed line: $line s: $s e: $e D: $d");
-    // }
-    // lineNo++;
+    if (isDebug) {
+      print("line: $line s: $s e: $e D: $d");
+    }
 
     add_edge(s, e, d);
   }
@@ -158,7 +151,7 @@ void main(List<String> args) async {
 
   Distance distance;
   var route = List<NodeId>.of([]);
-  for (var i = 1; i < count; i++) {
+  for (var i = 1; i <= count; i++) {
     final s = g.idx2id[i * 1000];
     final result = dijkstra(s, g.idx2id[1]);
     distance = result.first;
