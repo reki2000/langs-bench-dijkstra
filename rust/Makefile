@@ -2,7 +2,7 @@ all: main
 
 clean:
 	cargo clean
-	rm -f main
+	rm -f main || true
 
 main: src/main.rs
 	cargo build --release

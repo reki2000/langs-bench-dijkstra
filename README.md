@@ -25,33 +25,32 @@ pip install numpy matplotlib
 ## Language Environments
 
 You need running environments for languages below:
-- Go : 1.14
-- Rust : 1.44
-- JavaScript : NodeJS 13 
-- Kotlin : 1.3 + jdk >=8
-- Julia : 1.4
+- Go : 1.18
+- Rust : 1.62
+- JavaScript : NodeJS 18
+- Kotlin : 1.7 + jdk >= 18
+- Julia : 1.7
 - Clang : 7 (or versions which support C++17)
 - Dart : 2.16.1
-- Python : 3.8
+- Python : 3.10, Cython 0.29, PyPy 3.9-7.3.9
 
 I like using [asdf](https://asdf-vm.com/#/) to set up those environments, except Clang.
 
 ```setup.sh
-while read lang plugin version dummy; do
+while read lang plugin dummy; do
   asdf plugin add $plugin
-  asdf install $plugin $version
-  (cd $lang; asdf local $plugin $version)
+  (cd $lang; asdf install)
 done <<EOT
-go golang 1.14.2
-python python 3.8.2
-cython python 3.8.2
-pypy python pypy3.6-7.3.1
-kotlin java adopt-openjdk-14.0.1+7
-kotlin kotlin 1.3.72
-rust rust 1.44.0
-julia julia 1.4.1
-javascript nodejs 13.13.0
-dart dart 2.16.1
+go golang
+python python
+cython python
+pypy python
+kotlin java
+kotlin kotlin
+rust rust
+julia julia
+javascript nodejs
+dart dart
 EOT
 asdf reshim
 ```

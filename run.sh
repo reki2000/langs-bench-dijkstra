@@ -6,7 +6,7 @@ function bench {
   local langs="$1"
   for count in 0 20; do
     hyperfine --warmup 1 -L lang "$langs" 'cd {lang}; ./bench.sh '${count}' < ../data/Tokyo_Edgelist.csv' --export-json out/result-${count}.json
-    python plot_whisker.py --labels "$langs" --savefile out/result-${count}.png out/result-${count}.json 
+    python plot_whisker.py --savefile out/result-${count}.png out/result-${count}.json 
   done
 }
 
@@ -25,7 +25,7 @@ function build {
 if [ -n "$1" ]; then
   langs="$1"
 else
-  langs="cpp go rust javascript julia kotlin python cython pypy"
+  langs="cpp go rust javascript julia kotlin python cython pypy dart"
 fi
 
 for lang in $(echo $langs); do

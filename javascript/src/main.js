@@ -1,7 +1,7 @@
 'use strict'
 
 const fs = require('fs');
-const csvSync = require('csv-parse/lib/sync'); // requiring sync module
+const { parse } = require('csv-parse/sync');
 const pq = require('./priorityqueue');
 
 var is_debug = false;
@@ -61,7 +61,7 @@ function stof100(s) {
 
 function load() {
 	let data = fs.readFileSync('/dev/stdin', 'utf8');
-	let res = csvSync(data);
+	let res = parse(data);
 ;
 	let i = 0;
 	for (let line of res) {

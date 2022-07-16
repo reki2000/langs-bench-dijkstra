@@ -15,30 +15,18 @@ import matplotlib.pyplot as plt
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("file", help="JSON file with benchmark results")
 parser.add_argument("--title", help="Plot Title")
-parser.add_argument(
-    "--labels", help="Comma-separated list of entries for the plot legend"
-)
 parser.add_argument("--savefile", help="File name of output image")
 args = parser.parse_args()
 
 with open(args.file) as f:
     results = json.load(f)["results"]
 
-if args.labels:
-    labels = args.labels.split(",")
-else:
-    labels = [b["command"] for b in results]
+labels = [b["parameters"]["lang"] for b in results]
 times = [b["times"] for b in results]
 
-boxplot = plt.boxplot(times, vert=True, patch_artist=True)
-cmap = plt.cm.get_cmap("rainbow")
-colors = [cmap(val / len(times)) for val in range(len(times))]
-
-for patch, color in zip(boxplot["boxes"], colors):
-    patch.set_facecolor(color)
+boxplot = plt.boxplot(times, labels=labels, vert=True, patch_artist=True)
 
 plt.title(args.title)
-plt.legend(handles=boxplot["boxes"], labels=labels, loc="best", fontsize="medium")
 plt.ylabel("Time [s]")
 plt.ylim(0, None)
 plt.savefig(args.savefile)
