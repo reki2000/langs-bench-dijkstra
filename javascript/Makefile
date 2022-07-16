@@ -1,2 +1,4 @@
-all: src/main.js
+all:
 	npm install
+
+.PHONY: all
