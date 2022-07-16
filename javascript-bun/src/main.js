@@ -1,7 +1,6 @@
 'use strict'
 
 import fs from 'node:fs';
-import {parse} from 'csv-parse/sync';
 import pq from "./priorityqueue.js";
 
 var is_debug = false;
@@ -59,20 +58,26 @@ function stof100(s) {
 	return result;
 }
 
-function load() {
-	let data = fs.readFileSync('/dev/stdin', 'utf8');
-	let res = parse(data);
-	
-	let i = 0;
-	for (let line of res) {
-		i++;
-		if (i === 1) continue;
-		const s = parseInt(line[2]);
-		const e = parseInt(line[3]);
-		const d = stof100(line[5]);
-		if (is_debug) console.log("line:",line.join(","), "s:",s,"e:",e,"D:",d);
-		add_edge(s, e, d);
-	}
+async function load() {
+	const stream = fs.createReadStream('/dev/stdin', {encoding: 'utf8'});
+	const res = readline.createInterface({input: stream});
+
+	var i=1;
+	const p = new Promise((resolve, _) => {
+		res.on('line', (line) => {
+			if (i !== 1 && line !== '') {
+				const field = line.split(',');
+				const s = parseInt(field[2]);
+				const e = parseInt(field[3]);
+				const d = stof100(field[5]);
+				if (is_debug) console.log("line:", line, "s:", s, "e:", e, "D:", d);
+				add_edge(s, e, d);
+			}
+			i++;
+		});
+		res.on('close', resolve);
+	});
+	return p;
 }
 
 function dijkstra(start , end ) {
@@ -116,11 +121,11 @@ function dijkstra(start , end ) {
 	return [(d[e] / DISTANCE_MULTIPLE)|0, result];
 }
 
-function main() {
+async function main() {
 	const count = parseInt(process.argv[2]);
 	is_debug = process.argv.length > 3 && process.argv[3] == 'debug';
 
-	load();
+	await load();
 	console.log("loaded nodes:", g.idx);
 
 	let distance = 0, route = [];
