@@ -1,0 +1,14 @@
+name: langs_bench_dijkstra_dart
+description: A simple benchmark.
+version: 1.0.0
+# homepage: https://github.com/reki2000/langs-bench-dijkstra
+
+environment:
+  sdk: '>=2.15.1 <3.0.0'
+
+
+# dependencies:
+#   path: ^1.8.0
+
+dev_dependencies:
+  lints: ^1.0.0
