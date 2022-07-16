@@ -1,7 +1,7 @@
 all: main
 
 clean:
-	cd src && rm cy_g.c cy_g.*.so
+	cd src && rm -f cy_g.c cy_g.*.so || true
 
 main: src/cy_g.pyx
 	pip install -r requirements.txt

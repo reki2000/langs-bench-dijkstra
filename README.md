@@ -32,7 +32,7 @@ You need running environments for languages below:
 - Julia : 1.7
 - Clang : 7 (or versions which support C++17)
 - Dart : 2.16.1
-- Python : 3.8
+- Python : 3.10, Cython 0.29, PyPy 3.9-7.3.9
 
 I like using [asdf](https://asdf-vm.com/#/) to set up those environments, except Clang.
 
@@ -42,9 +42,9 @@ while read lang plugin dummy; do
   (cd $lang; asdf install)
 done <<EOT
 go golang
-python python 3.8.2
-cython python 3.8.2
-pypy python pypy3.6-7.3.1
+python python
+cython python
+pypy python
 kotlin java
 kotlin kotlin
 rust rust 1.44.0
