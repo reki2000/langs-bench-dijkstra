@@ -1,3 +1,3 @@
-[submodule "cpp/external_projects/robin-hood-hashing"]
-	path = cpp/external_projects/robin-hood-hashing
-	url = https://github.com/martinus/robin-hood-hashing
+[submodule "cpp/external_projects/unordered_dense"]
+	path = cpp/external_projects/unordered_dense
+	url = https://github.com/martinus/unordered_dense

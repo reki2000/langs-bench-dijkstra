@@ -6,7 +6,7 @@
 #include<queue>
 #include<cstdint>
 #include<limits>
-#include"robin_hood.h"
+#include"ankerl/unordered_dense.h"
 
 using NodeId = int;
 using NodeIndex = int;
@@ -18,7 +18,7 @@ constexpr int DISTANCE_MULTIPLE = 100;
 bool is_debug = false;
 
 struct G {
-  robin_hood::unordered_map<NodeId,NodeIndex> id2idx;
+  ankerl::unordered_dense::map<NodeId,NodeIndex> id2idx;
   std::vector<NodeId> idx2id = {0};
   NodeIndex idx = 1;
   std::vector<std::vector<Edge>> edge = {std::vector<Edge>()};
