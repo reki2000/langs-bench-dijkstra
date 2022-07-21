@@ -1,4 +1,6 @@
 all:
 	npm install
 
-.PHONY: all
+clean:
+
+.PHONY: all clean

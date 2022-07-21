@@ -1,7 +1,9 @@
 all: main
 
 clean:
-	rm -f main || true
+	rm -f main
 
 main: src/main.go src/priorityqueue.go
-	go build src/main.go src/priorityqueue.go
+	go build $^
+
+.PHONY: all clean
