@@ -173,7 +173,7 @@ int main(int argc, char **argv) {
 
   std::cout << "route: ";
   for (const NodeId id: result.second) {
-    std::cout << id << " ";
+    std::cout << id << ' ';
   }
   std::cout << std::endl;
 }
