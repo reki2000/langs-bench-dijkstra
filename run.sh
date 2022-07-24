@@ -22,8 +22,8 @@ function build {
 # create output directory
 [ ! -d out ] && mkdir out
 
-if [ -n "$1" ]; then
-  langs="$1"
+if [ -n "$*" ]; then
+  langs="$*"
 else
   langs="cpp go rust javascript julia kotlin python cython pypy dart"
 fi
