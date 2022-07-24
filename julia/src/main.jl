@@ -10,14 +10,14 @@ struct Edge
     second::Distance
 end
 
-mutable struct G 
+mutable struct G
     id2idx::Dict{NodeId,NodeIndex}
     idx2id::Array{NodeId,1}
     idx::NodeIndex
     edge::Array{Array{Edge,1},1}
 end
 
-function get_idx!(g::G, id::NodeId)::NodeIndex 
+function get_idx!(g::G, id::NodeId)::NodeIndex
     i = get(g.id2idx, id, 0)
     if i == 0
         i = g.idx
@@ -29,7 +29,7 @@ function get_idx!(g::G, id::NodeId)::NodeIndex
     i
 end
 
-function add_edge!(g::G, start::NodeId, _end::NodeId, distance::Distance) 
+function add_edge!(g::G, start::NodeId, _end::NodeId, distance::Distance)
     s = get_idx!(g, start)
     e = get_idx!(g, _end)
     push!(g.edge[s], Edge(e, distance))
@@ -94,7 +94,7 @@ function dijkstra(g::G, start::NodeId, _end::NodeId, is_debug::Bool = false)::Re
     push!(queue, Visit(0, s))
 
     visited = 0
-    @inbounds while ! empty(queue) 
+    @inbounds while ! empty(queue)
         a = pop!(queue)
         distance = a.first
         here = a.second
@@ -103,10 +103,10 @@ function dijkstra(g::G, start::NodeId, _end::NodeId, is_debug::Bool = false)::Re
         end
         visited = visited + 1
         is_debug && println("visiting: $(here) distance: $(distance)")
-        for e in g.edge[here] 
+        for e in g.edge[here]
             to = e.first
             w = distance + e.second
-            if w < d[to] 
+            if w < d[to]
                 prev[to] = here
                 d[to] = w
                 push!(queue, Visit(w, to))
@@ -118,7 +118,7 @@ function dijkstra(g::G, start::NodeId, _end::NodeId, is_debug::Bool = false)::Re
     n = e
     result = [g.idx2id[n]]
 
-    while d[n] != typemax(Distance) && n != s && n != 0 
+    while d[n] != typemax(Distance) && n != s && n != 0
         n = prev[n]
         push!(result, g.idx2id[n])
     end
@@ -126,7 +126,7 @@ function dijkstra(g::G, start::NodeId, _end::NodeId, is_debug::Bool = false)::Re
     return Result(fld(d[e], DISTANCE_MULTIPLE), result)
 end
 
-function main() 
+function main()
     count = parse(Int, ARGS[1])
     g = G(Dict{NodeId,NodeIndex}(), NodeId[], NodeIndex(1), Vector{Edge}[])
     is_debug = size(ARGS,1) > 1 && ARGS[2] == "debug"
@@ -135,7 +135,7 @@ function main()
     println("loaded nodes: ", g.idx)
 
     route = NodeId[]
-    for i in 1:count 
+    for i in 1:count
         s = g.idx2id[i*1000]
         result = dijkstra(g, s, g.idx2id[1], is_debug)
         distance = result.first
@@ -144,7 +144,7 @@ function main()
     end
 
     print("route: ")
-    for id in route 
+    for id in route
         print(id, " ")
     end
     println()

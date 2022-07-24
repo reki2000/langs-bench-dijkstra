@@ -10,7 +10,7 @@ Simple benchmarks of Dijkstra algorithm among C++, Go, Julia, Python(+Cython +Py
 This benchmark uses [hyperfine](https://github.com/sharkdp/hyperfine). Follow the install instruction there.
 
 
-Submodules are contained. You need to 
+Submodules are contained. You need to
 
 ```
 git submodule update --init --recursive
@@ -80,10 +80,10 @@ for specific language
 ./run.sh [cpp|go|rust|javascript|julia|kotlin|python|cython|pypy|dart]
 ```
 
-for test setup - choose one implementation (ex.`cpp`) to make a 'correct' result. 
+for test setup - choose one implementation (ex.`cpp`) to make a 'correct' result.
 ```
 mkdir out
-./test.sh cpp 
+./test.sh cpp
 mv out/cpp.txt out/expected.txt
 ```
 
