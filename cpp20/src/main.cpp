@@ -113,10 +113,8 @@ inline std::pair<Distance, std::vector<NodeId>> dijkstra(auto& output_handle, No
 
   int visited = 0;
   while (!queue.empty()) {
-    const auto a = queue.top();
+    const auto [distance, here] = queue.top();
     queue.pop();
-    const Distance distance = a.first;
-    const NodeIndex here = a.second;
     if (distance > d[here]) continue;
     if (is_debug) [[unlikely]] ::println(output_handle, "visiting: ", here, " distance: ", distance);
     ++visited;
