@@ -84,7 +84,7 @@ void load(auto& output_handle) {
 
   while (::scan<true>(cstd_unlocked, fast_io::manipulators::line_get(line_buf))) {
     std::string_view line(line_buf);
-    while (!fast_io::char_category::is_c_graph(line.back())) line.remove_suffix(1); // strip
+    while (!fast_io::char_category::is_c_graph(line.back())) [[unlikely]] line.remove_suffix(1); // strip
     const auto pos1 = line.find(',');
     const auto pos2 = line.find(',', pos1 + 1);
     const auto pos3 = line.find(',', pos2 + 1);
@@ -93,7 +93,7 @@ void load(auto& output_handle) {
     const NodeId s = stoi_unchecked(line.substr(pos2+1, pos3-pos2-1));
     const NodeId e = stoi_unchecked(line.substr(pos3+1, pos4-pos3-1));
     const Distance d = stof100(line.substr(pos5+1));
-    if (is_debug) ::println(output_handle, "line: ", line, " s: ", s, " e: ", e, " D: ", d);
+    if (is_debug) [[unlikely]] ::println(output_handle, "line: ", line, " s: ", s, " e: ", e, " D: ", d);
     add_edge(s, e, d);
   }
 }
@@ -118,7 +118,7 @@ inline std::pair<Distance, std::vector<NodeId>> dijkstra(auto& output_handle, No
     const Distance distance = a.first;
     const NodeIndex here = a.second;
     if (distance > d[here]) continue;
-    if (is_debug) ::println(output_handle, "visiting: ", here, " distance: ", distance);
+    if (is_debug) [[unlikely]] ::println(output_handle, "visiting: ", here, " distance: ", distance);
     ++visited;
 
     for (const Edge& e : g.edge[here]) {
