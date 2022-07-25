@@ -7,11 +7,14 @@
 #include<limits>
 #include"ankerl/unordered_dense.h"
 #include"fast_io.h"
+#include"boost/container/vector.hpp"
+#include"boost/container/small_vector.hpp"
 
 using NodeId = int;
 using NodeIndex = int;
 using Distance = std::int32_t;
 using Edge = std::pair<NodeIndex, Distance>;
+template<typename T> using SmallVector = boost::container::small_vector<T, 4>;
 
 constexpr int DISTANCE_MULTIPLE = 100;
 
@@ -19,9 +22,9 @@ bool is_debug = false;
 
 struct G {
   ankerl::unordered_dense::map<NodeId,NodeIndex> id2idx;
-  std::vector<NodeId> idx2id = {0};
+  boost::container::vector<NodeId> idx2id = {0};
   NodeIndex idx = 1;
-  std::vector<std::vector<Edge>> edge = {std::vector<Edge>()};
+  boost::container::vector<SmallVector<Edge>> edge = {SmallVector<Edge>()};
 } g;
 
 inline NodeIndex get_idx(NodeId id) {
@@ -30,7 +33,7 @@ inline NodeIndex get_idx(NodeId id) {
     i = g.idx++;
     g.id2idx[id] = i;
     g.idx2id.push_back(id);
-    g.edge.push_back(std::vector<Edge>());
+    g.edge.push_back(SmallVector<Edge>());
   }
   return i;
 }
@@ -100,15 +103,15 @@ void load(auto& output_handle) {
 
 using Visit = std::pair<Distance, NodeIndex>;
 
-inline std::pair<Distance, std::vector<NodeId>> dijkstra(auto& output_handle, NodeId start, NodeId end) {
+inline std::pair<Distance, boost::container::vector<NodeId>> dijkstra(auto& output_handle, NodeId start, NodeId end) {
   const NodeIndex s = get_idx(start);
   const NodeIndex e = get_idx(end);
 
   const int size = g.idx;
-  std::vector<Distance> d(size, std::numeric_limits<Distance>::max());
-  std::vector<NodeIndex> prev(size);
+  boost::container::vector<Distance> d(size, std::numeric_limits<Distance>::max());
+  boost::container::vector<NodeIndex> prev(size);
 
-  std::priority_queue<Visit, std::vector<Visit>, std::greater<>> queue;
+  std::priority_queue<Visit, boost::container::vector<Visit>, std::greater<>> queue;
   queue.push({0,s});
 
   int visited = 0;
@@ -132,7 +135,7 @@ inline std::pair<Distance, std::vector<NodeId>> dijkstra(auto& output_handle, No
 
   ::println(output_handle, "visited: ", visited);
 
-  std::vector<NodeId> result;
+  boost::container::vector<NodeId> result;
   NodeIndex n = e;
   result.push_back(g.idx2id[n]);
 
@@ -156,7 +159,7 @@ int main(int argc, char **argv) {
   load(cstd_unlocked);
   ::println(cstd_unlocked, "loaded nodes: ", g.idx);
 
-  std::pair<Distance, std::vector<NodeId>> result;
+  std::pair<Distance, boost::container::vector<NodeId>> result;
   for (int i=0; i<count; ++i) {
     const NodeId s = g.idx2id[(i+1) * 1000];
     result = dijkstra(cstd_unlocked, s, g.idx2id[1]);
