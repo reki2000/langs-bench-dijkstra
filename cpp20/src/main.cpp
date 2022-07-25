@@ -121,7 +121,7 @@ inline std::pair<Distance, std::vector<NodeId>> dijkstra(NodeId start, NodeId en
     const NodeIndex here = a.second;
     if (distance > d[here]) continue;
     if (is_debug) std::cout << "visiting: " << here << " distance: " << distance << std::endl;
-    visited++;
+    ++visited;
 
     for (const Edge& e : g.edge[here]) {
       const NodeIndex to = e.first;
@@ -160,7 +160,7 @@ int main(int argc, char **argv) {
   std::cout << "loaded nodes: " << g.idx << std::endl;
 
   std::pair<Distance, std::vector<NodeId>> result;
-  for (int i=0; i<count; i++) {
+  for (int i=0; i<count; ++i) {
     const NodeId s = g.idx2id[(i+1) * 1000];
     result = dijkstra(s, g.idx2id[1]);
     std::cout << "distance: " << result.first << std::endl;
