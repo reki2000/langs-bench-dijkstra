@@ -4,3 +4,6 @@
 [submodule "cpp20/external_projects/unordered_dense"]
 	path = cpp20/external_projects/unordered_dense
 	url = https://github.com/martinus/unordered_dense
+[submodule "cpp20/external_projects/fast_io"]
+	path = cpp20/external_projects/fast_io
+	url = https://github.com/cppfastio/fast_io
