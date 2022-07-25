@@ -33,6 +33,7 @@ You need running environments for languages below:
 - Kotlin : 1.7 + jdk >= 18
 - Julia : 1.7
 - Clang : 7 (or versions which support C++17)
+- GCC(g++) : 10 (or versions which support C++20)
 - Dart : 2.16.1
 - Python : 3.10, Cython 0.29, PyPy 3.9-7.3.9
 
