@@ -87,7 +87,7 @@ function dijkstra(start , end ) {
 
 	const MAX_INT32 = 2147483647; // 2^31-1 - this is not the max value of javascript Number but good for this benchmark
 	const size = g.idx;
-	const d = new Array(size+1).fill(MAX_INT32); 
+	const d = new Array(size+1).fill(MAX_INT32);
 	const prev = new Array(size+1).fill(0);
 
 	const queue = new pq();
