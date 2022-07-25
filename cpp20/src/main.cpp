@@ -74,11 +74,15 @@ inline int stof100(std::string_view s) {
   return result;
 }
 
-void load() {
-  std::string line_buf;
-  ::scan(fast_io::manipulators::line_get(line_buf)); // skip header
+void load(auto& output_handle) {
+  auto cst{fast_io::c_stdin()};
+  fast_io::io_lock_guard guard{cst};
+  auto cstd_unlocked{cst.unlocked_handle()};
 
-  while (::scan<true>(fast_io::manipulators::line_get(line_buf))) {
+  std::string line_buf;
+  ::scan(cstd_unlocked, fast_io::manipulators::line_get(line_buf)); // skip header
+
+  while (::scan<true>(cstd_unlocked, fast_io::manipulators::line_get(line_buf))) {
     std::string_view line(line_buf);
     while (!fast_io::char_category::is_c_graph(line.back())) line.remove_suffix(1); // strip
     const auto pos1 = line.find(',');
@@ -89,14 +93,14 @@ void load() {
     const NodeId s = stoi_unchecked(line.substr(pos2+1, pos3-pos2-1));
     const NodeId e = stoi_unchecked(line.substr(pos3+1, pos4-pos3-1));
     const Distance d = stof100(line.substr(pos5+1));
-    if (is_debug) ::println("line: ", line, " s: ", s, " e: ", e, " D: ", d);
+    if (is_debug) ::println(output_handle, "line: ", line, " s: ", s, " e: ", e, " D: ", d);
     add_edge(s, e, d);
   }
 }
 
 using Visit = std::pair<Distance, NodeIndex>;
 
-inline std::pair<Distance, std::vector<NodeId>> dijkstra(NodeId start, NodeId end) {
+inline std::pair<Distance, std::vector<NodeId>> dijkstra(auto& output_handle, NodeId start, NodeId end) {
   const NodeIndex s = get_idx(start);
   const NodeIndex e = get_idx(end);
 
@@ -114,7 +118,7 @@ inline std::pair<Distance, std::vector<NodeId>> dijkstra(NodeId start, NodeId en
     const Distance distance = a.first;
     const NodeIndex here = a.second;
     if (distance > d[here]) continue;
-    if (is_debug) ::println("visiting: ", here, " distance: ", distance);
+    if (is_debug) ::println(output_handle, "visiting: ", here, " distance: ", distance);
     ++visited;
 
     for (const Edge& e : g.edge[here]) {
@@ -128,7 +132,7 @@ inline std::pair<Distance, std::vector<NodeId>> dijkstra(NodeId start, NodeId en
     }
   }
 
-  ::println("visited: ", visited);
+  ::println(output_handle, "visited: ", visited);
 
   std::vector<NodeId> result;
   NodeIndex n = e;
@@ -147,19 +151,23 @@ int main(int argc, char **argv) {
   const int count = atoi(argv[1]);
   is_debug = argc > 2 && std::string_view(argv[2]) == "debug";
 
-  load();
-  ::println("loaded nodes: ", g.idx);
+  auto cst{fast_io::c_stdout()};
+  fast_io::io_lock_guard guard{cst};
+  auto cstd_unlocked{cst.unlocked_handle()};
+
+  load(cstd_unlocked);
+  ::println(cstd_unlocked, "loaded nodes: ", g.idx);
 
   std::pair<Distance, std::vector<NodeId>> result;
   for (int i=0; i<count; ++i) {
     const NodeId s = g.idx2id[(i+1) * 1000];
-    result = dijkstra(s, g.idx2id[1]);
-    ::println("distance: ", result.first);
+    result = dijkstra(cstd_unlocked, s, g.idx2id[1]);
+    ::println(cstd_unlocked, "distance: ", result.first);
   }
 
-  ::print("route: ");
+  ::print(cstd_unlocked, "route: ");
   for (const NodeId id: result.second) {
-    ::print(id, fast_io::manipulators::chvw(' '));
+    ::print(cstd_unlocked, id, fast_io::manipulators::chvw(' '));
   }
-  ::print(fast_io::manipulators::chvw('\n'));
+  ::print(cstd_unlocked, fast_io::manipulators::chvw('\n'));
 }
