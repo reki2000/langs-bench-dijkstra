@@ -6,10 +6,12 @@ import System.IO (isEOF)
 import Control.Monad (when)
 
 import qualified Data.ByteString.Char8 as B
+
 import Data.List.Split (splitOn)
 import Data.Char (ord)
 
 import Graph
+import Data.Maybe (fromMaybe)
 
 strtof100 :: String -> Int -> Int -> Int
 strtof100 "" base decimalCount
@@ -25,12 +27,12 @@ strtof100 (ch:rest) base decimalCount
     | otherwise = 0
 
 
-parseLine :: String -> (Int, Int, Int)
-parseLine line = do
-    let fields = splitOn "," line
-    let fromId = read $ fields !! 2 :: Int
-    let toId = read $ fields !! 3 :: Int
-    let distance = strtof100 (fields !! 5) 0 (- 1)
+parseLine :: B.ByteString -> (Int, Int, Int)
+parseLine lineB = do
+    let fields = B.split ',' lineB
+    let (fromId,_) = fromMaybe (0, B.empty) (B.readInt $ fields !! 2)
+    let (toId,_) = fromMaybe (0, B.empty) (B.readInt $ fields !! 3)
+    let distance = strtof100 (B.unpack (fields !! 5)) 0 (- 1)
     (fromId, toId, distance)
 
 loadLine :: Bool -> IO G -> IO G
@@ -39,14 +41,14 @@ loadLine isDebug g = do
     if eof
         then g
         else do
-            line <- getLine
+            line <- B.getLine
             let (fromId, toId, distance) = parseLine line
-            when isDebug (putStrLn $ "line: " ++ line ++ " s:" ++ show fromId ++ " e:" ++ show toId ++ " D: " ++ show distance)
+            when isDebug $ putStrLn $ "line: " ++ filter (/= '\r') (B.unpack line) ++ " s:" ++ show fromId ++ " e:" ++ show toId ++ " D: " ++ show distance
             g2 <- g
             loadLine isDebug $ return (addEdge fromId toId distance g2)
 
 load :: Bool -> IO G
 load isDebug = do
     let g = emptyGraph
-    header <- getLine
+    header <- B.getLine
     loadLine isDebug (return g)
