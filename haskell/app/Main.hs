@@ -1,88 +1,82 @@
-module Main where
+import System.Environment (getArgs)
 
-import qualified Data.IntMap as IntMap
-import Data.List.Split (splitOn)
-import System.IO (isEOF)
-import Data.Char (ord)
+import qualified Data.PQueue.Min as PQ
 
 import qualified Data.Vector.Unboxed as VU
-import qualified Data.ByteString.Char8 as B
+import qualified Data.Vector.Mutable as VM
 
-data Edge = Edge { nodeIndex, distance :: Int }
+import Graph
+import MapLoader (load)
+import Control.Monad (when)
 
-type NodeIndex = Int
-type NodeId = Int
-type Distance = Int
+type VisitQueue = PQ.MinQueue (Distance, NodeIndex)
+type DistanceMap = [(Distance, NodeIndex)]
 
-data G = G {
-    id2idx :: IntMap.IntMap Int,
-    idx2id :: [NodeId],
-    idx :: NodeIndex,
-    edge :: [[Edge]]
-} 
+visit :: Bool -> G -> Int -> VisitQueue -> DistanceMap -> IO (Int, VisitQueue, DistanceMap)
+visit isDebug g visitCount queue d 
+    | PQ.size queue == 0 = return (visitCount, queue, d)
+    | otherwise = do
+        let ((distanceHere,here), newQueue) = PQ.deleteFindMin queue
+        if distanceHere > fst (d !! here)
+            then visit isDebug g visitCount newQueue d
+            else do
+                when isDebug (putStrLn $ "visiting: " ++ show here ++ " distance: " ++ show distanceHere)
+                let (d3, q3) = foldr 
+                        (\e t -> do 
+                            let to = nodeIndex e
+                            let w = distanceHere + distance e
+                            let (d2, queue2) = t
+                            if w < fst (d2 !! to)
+                                then (replace to (w, here) d2, PQ.insert (w, to) queue2)
+                                else t)
+                        (d, newQueue)
+                        (edge g !! here)
+                visit isDebug g (visitCount + 1) q3 d3
 
-getIndex :: G -> NodeId -> (G, NodeIndex)
-getIndex g id = do
-    let map = id2idx g
-    case IntMap.lookup id map of
-        Just index -> (g, index)
-        Nothing -> do
-            let index = idx g
-            let newIdx2Id = idx2id g ++ [id]
-            let newEdge = edge g ++ [[]]
-            let newId2Idx = IntMap.insert id index map
-            (G newId2Idx newIdx2Id (index + 1) newEdge, index)
+appendRoute :: G -> DistanceMap -> NodeIndex -> NodeIndex -> [NodeId] -> [NodeId]
+appendRoute g d s n result
+    | fst (d !! n) == (maxBound :: Int) = result
+    | n == s = result
+    | n == 0 = result
+    | otherwise = do
+        let newN = snd (d !! n)
+        appendRoute g d s newN (result ++ [idx2id g !! newN])
 
-replace :: Int -> a -> [a] -> [a] 
-replace pos newVal vec = take pos vec ++ [newVal] ++ drop (pos+1) vec
+dijkstra :: Bool -> G -> NodeId -> NodeId -> IO (Int, [NodeId])
+dijkstra isDebug g startId endId = do
+    let (_, startIndex) = getIndex g startId
+    let (_, endIndex) = getIndex g endId
+    let size = idx g
 
-addEdge :: NodeId -> NodeId -> Distance -> G -> G
-addEdge fromId toId distance g = do
-    let (g2, fromIdx) = getIndex g fromId
-    let (g3, toIdx) = getIndex g2 toId
-    let e = edge g3
-    let newEdges = (e !! fromIdx) ++ [Edge toIdx distance]
-    let newEdge = replace fromIdx newEdges e
-    G (id2idx g3) (idx2id g3) (idx g3) newEdge
+    let d = replicate size (maxBound :: Distance, 0 :: NodeIndex)
 
-strtof100 :: String -> Int -> Int -> Int
-strtof100 "" base _ = base
-strtof100 (ch:rest) base decimalCount
-    | decimalCount == 0 = base
-    | ch == '.' = strtof100 rest base 2
-    | '0' <= ch && ch <= '9' = do
-        let newVelue = base * 10 + ord ch - ord '0'
-        strtof100 rest newVelue (decimalCount - 1)
-    | otherwise = 0
+    let queue = PQ.singleton (0, startIndex) :: VisitQueue
 
+    (visitCount, _, d) <- visit isDebug g 0 queue d
 
-parseLine :: String -> (Int, Int, Int)
-parseLine line = do
-    let fields = splitOn "," line
-    let fromId = read $ fields !! 2 :: Int
-    let toId = read $ fields !! 3 :: Int
-    let distance = strtof100 (fields !! 5) 0 0
-    (fromId, toId, distance)
-
-loadLine :: IO G -> IO G
-loadLine g = do
-    eof <- isEOF
-    if eof
-        then g
-        else do
-            line <- getLine
-            let (fromId, toId, distance) = parseLine line
-            g2 <- g
-            loadLine $ return (addEdge fromId toId distance g2)
-
-load :: IO G
-load = do
-    let g = G IntMap.empty [] 0 []
-    header <- getLine
-    loadLine (return g)
+    putStrLn $ "visited: " ++ show visitCount
+    let routes = appendRoute g d startIndex endIndex [idx2id g !! endIndex]
+    return (div (fst (d !! endIndex)) 100, routes)
 
 main :: IO ()
 main = do
-    g <- load
-    putStrLn $ show (idx g) ++ " nodes loaded"
+    args <- getArgs
+    let count = read (head args) :: Int
+    let isDebug = "debug" `elem` args
+
+    g <- load isDebug 
+    putStrLn $ "loaded nodes: " ++ show (idx g)
+
+    (distance, route) <- foldr
+            (\i _-> do
+                let startId = idx2id g !! ((i+1) * 1000)
+                let endId = idx2id g !! 1
+                dijkstra isDebug g startId endId)
+            (return (0, []))
+            [0, 1 .. count]
+
+    putStrLn $ "distance: " ++ show distance
+
+    let routeStr = map show route
+    putStrLn $ "route: " ++ unwords routeStr ++ " "
 

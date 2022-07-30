@@ -1,3 +1,3 @@
 #!/bin/sh
 
-cabal run -O2 < ../data/Tokyo_Edgelist.csv
+bin/main "$@" < ../data/Tokyo_Edgelist.csv
