@@ -6,7 +6,7 @@
 #include<queue>
 #include<cstdint>
 #include<limits>
-#include"robin_hood.h"
+#include"ankerl/unordered_dense.h"
 
 using NodeId = int;
 using NodeIndex = int;
@@ -18,7 +18,7 @@ constexpr int DISTANCE_MULTIPLE = 100;
 bool is_debug = false;
 
 struct G {
-  robin_hood::unordered_map<NodeId,NodeIndex> id2idx;
+  ankerl::unordered_dense::map<NodeId,NodeIndex> id2idx;
   std::vector<NodeId> idx2id = {0};
   NodeIndex idx = 1;
   std::vector<std::vector<Edge>> edge = {std::vector<Edge>()};
@@ -75,29 +75,24 @@ inline int stof100(std::string_view s) {
 }
 
 void load() {
-  std::string line;
-  std::getline(std::cin, line); // skip header
+  std::string line_buf;
+  std::getline(std::cin, line_buf); // skip header
 
   while (true) {
-    std::getline(std::cin, line);
+    std::getline(std::cin, line_buf);
     if (std::cin.eof()) {
       break;
     }
-    while (!isgraph(line.back())) line.pop_back(); // strip
-    NodeId s, e;
-    Distance d;
-    for (std::string::size_type idx=0, pos=0, prev_pos=0; pos <= line.length(); pos++) {
-      if (line[pos] == ',' || pos == line.length()) {
-        const auto field = std::string_view{line}.substr(prev_pos, pos-prev_pos);
-        switch (idx) {
-          case 2: s = stoi_unchecked(field); break;
-          case 3: e = stoi_unchecked(field); break;
-          case 5: d = stof100(field); break;
-        }
-        prev_pos = pos+1;
-        idx++;
-      }
-    }
+    std::string_view line(line_buf);
+    while (!isgraph(line.back())) line.remove_suffix(1); // strip
+    const auto pos1 = line.find(',');
+    const auto pos2 = line.find(',', pos1 + 1);
+    const auto pos3 = line.find(',', pos2 + 1);
+    const auto pos4 = line.find(',', pos3 + 1);
+    const auto pos5 = line.find(',', pos4 + 1);
+    const NodeId s = stoi_unchecked(line.substr(pos2+1, pos3-pos2-1));
+    const NodeId e = stoi_unchecked(line.substr(pos3+1, pos4-pos3-1));
+    const Distance d = stof100(line.substr(pos5+1));
     if (is_debug) std::cout << "line: " << line << " s: " << s << " e: " << e << " D: " << d << std::endl;
     // cerr << "line:" << line << "s:" << s << " e:" << e << " d:" << d << endl;
     // std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -115,7 +110,7 @@ inline std::pair<Distance, std::vector<NodeId>> dijkstra(NodeId start, NodeId en
   std::vector<Distance> d(size, std::numeric_limits<Distance>::max());
   std::vector<NodeIndex> prev(size);
 
-  std::priority_queue<Visit, std::vector<Visit>, std::greater<Visit>> queue;
+  std::priority_queue<Visit, std::vector<Visit>, std::greater<>> queue;
   queue.push({0,s});
 
   int visited = 0;
@@ -173,7 +168,7 @@ int main(int argc, char **argv) {
 
   std::cout << "route: ";
   for (const NodeId id: result.second) {
-    std::cout << id << " ";
+    std::cout << id << ' ';
   }
   std::cout << std::endl;
 }
