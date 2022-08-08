@@ -10,7 +10,7 @@ Simple benchmarks of Dijkstra algorithm among C++, Go, Julia, Python(+Cython +Py
 This benchmark uses [hyperfine](https://github.com/sharkdp/hyperfine). Follow the install instruction there.
 
 
-Submodules are contained. You need to
+For `cpp` and `unregulated-cpp20` , submodules are contained. You need to
 
 ```
 git submodule update --init --recursive
@@ -33,6 +33,7 @@ You need running environments for languages below:
 - Kotlin : 1.7 + jdk >= 18
 - Julia : 1.7
 - Clang : 7 (or versions which support C++17)
+- GCC(g++) : 10 (or versions which support C++20)
 - Dart : 2.16.1
 - Python : 3.10, Cython 0.29, PyPy 3.9-7.3.9
 
@@ -77,7 +78,7 @@ for all languages
 
 for specific language
 ```
-./run.sh [cpp|go|rust|javascript|julia|kotlin|python|cython|pypy|dart]
+./run.sh [cpp|go|rust|javascript|julia|kotlin|python|cython|pypy|dart|unregulated-cpp20]
 ```
 
 for test setup - choose one implementation (ex.`cpp`) to make a 'correct' result.
@@ -89,5 +90,5 @@ mv out/cpp.txt out/expected.txt
 
 for test
 ```
-./test.sh [cpp|go|rust|javascript|julia|kotlin|python|cython|pypy|dart]
+./test.sh [cpp|go|rust|javascript|julia|kotlin|python|cython|pypy|dart|unregulated-cpp20]
 ```
