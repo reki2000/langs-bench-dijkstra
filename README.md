@@ -10,7 +10,7 @@ Simple benchmarks of Dijkstra algorithm among C++, Go, Julia, Python(+Cython +Py
 This benchmark uses [hyperfine](https://github.com/sharkdp/hyperfine). Follow the install instruction there.
 
 
-Submodules are contained. You need to
+For `cpp` and `unregulated-cpp20` , submodules are contained. You need to
 
 ```
 git submodule update --init --recursive
