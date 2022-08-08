@@ -18,7 +18,7 @@ if [ -n "$1" ]; then
     check $lang
   done
 else
-  for lang in cpp cpp20 go rust javascript julia kotlin python cython pypy dart; do
+  for lang in cpp go rust javascript julia kotlin python cython pypy dart unregulated-cpp20; do
     check $lang
   done
 fi

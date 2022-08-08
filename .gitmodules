@@ -1,30 +1,30 @@
 [submodule "cpp/external_projects/unordered_dense"]
 	path = cpp/external_projects/unordered_dense
 	url = https://github.com/martinus/unordered_dense
-[submodule "cpp20/external_projects/unordered_dense"]
-	path = cpp20/external_projects/unordered_dense
+[submodule "unregulated-cpp20/external_projects/unordered_dense"]
+	path = unregulated-cpp20/external_projects/unordered_dense
 	url = https://github.com/martinus/unordered_dense
-[submodule "cpp20/external_projects/fast_io"]
-	path = cpp20/external_projects/fast_io
+[submodule "unregulated-cpp20/external_projects/fast_io"]
+	path = unregulated-cpp20/external_projects/fast_io
 	url = https://github.com/cppfastio/fast_io
-[submodule "cpp20/external_projects/container"]
-	path = cpp20/external_projects/container
+[submodule "unregulated-cpp20/external_projects/container"]
+	path = unregulated-cpp20/external_projects/container
 	url = https://github.com/boostorg/container
-[submodule "cpp20/external_projects/move"]
-	path = cpp20/external_projects/move
+[submodule "unregulated-cpp20/external_projects/move"]
+	path = unregulated-cpp20/external_projects/move
 	url = https://github.com/boostorg/move
-[submodule "cpp20/external_projects/intrusive"]
-	path = cpp20/external_projects/intrusive
+[submodule "unregulated-cpp20/external_projects/intrusive"]
+	path = unregulated-cpp20/external_projects/intrusive
 	url = https://github.com/boostorg/intrusive
-[submodule "cpp20/external_projects/config"]
-	path = cpp20/external_projects/config
+[submodule "unregulated-cpp20/external_projects/config"]
+	path = unregulated-cpp20/external_projects/config
 	url = https://github.com/boostorg/config
-[submodule "cpp20/external_projects/assert"]
-	path = cpp20/external_projects/assert
+[submodule "unregulated-cpp20/external_projects/assert"]
+	path = unregulated-cpp20/external_projects/assert
 	url = https://github.com/boostorg/assert
-[submodule "cpp20/external_projects/static_assert"]
-	path = cpp20/external_projects/static_assert
+[submodule "unregulated-cpp20/external_projects/static_assert"]
+	path = unregulated-cpp20/external_projects/static_assert
 	url = https://github.com/boostorg/static_assert
-[submodule "cpp20/external_projects/core"]
-	path = cpp20/external_projects/core
+[submodule "unregulated-cpp20/external_projects/core"]
+	path = unregulated-cpp20/external_projects/core
 	url = https://github.com/boostorg/core
