@@ -24,6 +24,8 @@ with open(args.file) as f:
 labels = [b["parameters"]["lang"] for b in results]
 times = [b["times"] for b in results]
 
+plt.figure(figsize=(9.6, 7.2), dpi=200)
+
 boxplot = plt.boxplot(times, labels=labels, vert=True, patch_artist=True)
 
 plt.title(args.title)
