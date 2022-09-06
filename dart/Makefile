@@ -1,13 +1,15 @@
 SRC = lib
 
-all: main
+all: bin/main
 
 clean:
-	rm bin/main
+	rm -f bin/main
 
-main: $(SRC)/main.dart
+bin/main: $(SRC)/main.dart
 	mkdir -p bin
-	dart compile exe -o bin/main ${SRC}/main.dart 
+	dart compile exe -o $@ $<
 
 run: bin/main
 	bin/main
+
+.PHONY: all clean run

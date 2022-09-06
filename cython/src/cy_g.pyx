@@ -4,7 +4,7 @@ from cython.view cimport array as cvarray
 cdef class G:
     cdef dict id2idx
     cdef list idx2id
-    cdef int idx 
+    cdef int idx
     cdef list edge
 
     def __init__(self):
@@ -12,7 +12,7 @@ cdef class G:
         self.idx2id = [0]
         self.idx = 1
         self.edge = [[]]
-    
+
 cdef int get_idx(G g, int id):
     cdef int i
     i = g.id2idx.get(id, 0)
@@ -71,7 +71,7 @@ cdef tuple dijkstra(G g, int DISTANCE_MULTIPLE, is_debug, int start, int end):
     for i in range(size):
         d[i] = MAX_INT32
         prev[i] = 0
-    
+
     cdef list queue
     queue = []
     heappush(queue, (0, s))

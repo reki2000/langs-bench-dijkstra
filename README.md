@@ -1,5 +1,7 @@
 # langs-bench-dijkstra
-Simple benchmarks of Dijkstra algorithm among C++, Go, Julia, Python(+Cython), JavaScript, Rust, Dart and Kotlin.
+Simple benchmarks of Dijkstra algorithm among C++, Go, Julia, Python(+Cython +PyPy), JavaScript(Node), Rust, Dart and Kotlin.
+
+![result-20](https://user-images.githubusercontent.com/2533597/179347589-1102cfbf-78e5-4a40-a7a8-b4e4e4d82ebe.png)
 
 # Setup
 
@@ -8,7 +10,7 @@ Simple benchmarks of Dijkstra algorithm among C++, Go, Julia, Python(+Cython), J
 This benchmark uses [hyperfine](https://github.com/sharkdp/hyperfine). Follow the install instruction there.
 
 
-Submodules are contained. You need to 
+For `cpp` and `unregulated-cpp20` , submodules are contained. You need to
 
 ```
 git submodule update --init --recursive
@@ -31,6 +33,7 @@ You need running environments for languages below:
 - Kotlin : 1.7 + jdk >= 18
 - Julia : 1.7
 - Clang : 7 (or versions which support C++17)
+- GCC(g++) : 10 (or versions which support C++20)
 - Dart : 2.16.1
 - Python : 3.10, Cython 0.29, PyPy 3.9-7.3.9
 - Haskell: GHC 9.2.4
@@ -83,17 +86,17 @@ for all languages
 
 for specific language
 ```
-./run.sh [cpp|go|rust|javascript|julia|kotlin|python|cython|pypy|dart]
+./run.sh [cpp|go|rust|javascript|julia|kotlin|python|cython|pypy|dart|unregulated-cpp20]
 ```
 
-for test setup - choose one implementation (ex.`cpp`) to make a 'correct' result. 
+for test setup - choose one implementation (ex.`cpp`) to make a 'correct' result.
 ```
 mkdir out
-./test.sh cpp 
+./test.sh cpp
 mv out/cpp.txt out/expected.txt
 ```
 
 for test
 ```
-./test.sh [cpp|go|rust|javascript|julia|kotlin|python|cython|pypy|dart]
+./test.sh [cpp|go|rust|javascript|julia|kotlin|python|cython|pypy|dart|unregulated-cpp20]
 ```
