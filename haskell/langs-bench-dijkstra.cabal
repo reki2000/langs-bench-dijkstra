@@ -41,7 +41,6 @@ executable main
 
 Test-Suite unit-test
   Type:                 exitcode-stdio-1.0
-  Default-Language:     Haskell2010
   Hs-Source-Dirs:       test, app
   other-modules:        MapLoader, Graph
   Ghc-Options:          -Wall
@@ -53,3 +52,4 @@ Test-Suite unit-test
                         hspec-core >=2.1.7,
                         hspec >=2.1.7,
                         hspec-expectations >=0.6.1.1
+  Default-Language:     GHC2021

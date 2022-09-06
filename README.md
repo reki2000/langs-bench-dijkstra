@@ -33,8 +33,9 @@ You need running environments for languages below:
 - Clang : 7 (or versions which support C++17)
 - Dart : 2.16.1
 - Python : 3.10, Cython 0.29, PyPy 3.9-7.3.9
+- Haskell: GHC 9.2.4
 
-I like using [asdf](https://asdf-vm.com/#/) to set up those environments, except Clang.
+I like using [asdf](https://asdf-vm.com/#/) to set up those environments, except Clang and Haskell.
 
 ```setup.sh
 while read lang plugin dummy; do
@@ -53,6 +54,13 @@ javascript nodejs
 dart dart
 EOT
 asdf reshim
+```
+
+for Haskell, prepare `ghc` and `cabal` by using [ghcup](https://www.haskell.org/ghcup/).
+
+```
+ghcup install ghc 9.2.4 --set 
+ghcup install cabal 3.8.1.0 --set 
 ```
 
 ## Road Network Data
