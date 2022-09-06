@@ -1,7 +1,7 @@
 module Graph where
 
 import qualified Data.IntMap as IntMap
-import qualified Data.Vector as V
+import qualified Data.Vector.Growable as GV
 
 type NodeIndex = Int
 type NodeId = Int
@@ -11,31 +11,46 @@ data Edge = Edge { nodeIndex :: NodeIndex, distance :: Distance } deriving Show
 
 data G = G {
     id2idx :: IntMap.IntMap Int,
-    idx2id :: V.Vector NodeId,
-    idx :: NodeIndex,
-    edge :: V.Vector (V.Vector Edge)
+    idx2id :: GV.GrowableUnboxedIOVector NodeId,
+    edge :: GV.GrowableIOVector [Edge],
+    idx :: NodeIndex
 }
 
-emptyGraph :: G
-emptyGraph = G IntMap.empty (V.singleton 0) 1 (V.singleton V.empty)
+size :: G -> Int
+size g = idx g
 
-getIndex :: G -> NodeId -> (G, NodeIndex)
-getIndex g id = do
-    let map = id2idx g
-    case IntMap.lookup id map of
-        Just index -> (g, index)
+emptyGraph :: IO G
+emptyGraph = do
+    edges <- GV.replicate 1 []
+    ids <- GV.replicate 1 0
+    return $ G IntMap.empty ids edges 1
+
+getId :: G -> Int -> IO (NodeId)
+getId g n = do
+    nodeId <- GV.read (idx2id g) n
+    return nodeId
+
+getEdges :: G -> Int -> IO ([Edge])
+getEdges g n = do
+    edges <- GV.read (edge g) n
+    return edges
+
+getIndex :: G -> NodeId -> IO (G, NodeIndex)
+getIndex g nodeId = do
+    let idxMap = id2idx g
+    case IntMap.lookup nodeId idxMap of
+        Just index -> return (g, index)
         Nothing -> do
             let index = idx g
-            let newIdx2Id =  V.snoc (idx2id g) id
-            let newEdge = V.snoc (edge g) V.empty
-            let newId2Idx = IntMap.insert id index map
-            (G newId2Idx newIdx2Id (index + 1) newEdge, index)
+            let newId2Idx = IntMap.insert nodeId index idxMap
+            GV.push (idx2id g) nodeId
+            GV.push (edge g) []
+            return (G newId2Idx (idx2id g) (edge g) (index + 1), index)
 
-addEdge :: NodeId -> NodeId -> Distance -> G -> G
-addEdge fromId toId distance g = do
-    let (g2, fromIdx) = getIndex g fromId
-    let (g3, toIdx) = getIndex g2 toId
+addEdge :: NodeId -> NodeId -> Distance -> G -> IO G
+addEdge fromId toId dist g = do
+    (g2, fromIdx) <- getIndex g fromId
+    (g3, toIdx) <- getIndex g2 toId
     let e = edge g3
-    let newEdges = V.snoc (e V.! fromIdx) (Edge toIdx distance)
-    let newEdge = e V.// [(fromIdx, newEdges)]
-    G (id2idx g3) (idx2id g3) (idx g3) newEdge
+    GV.modify e (\edges -> edges ++ [(Edge toIdx dist)]) fromIdx 
+    return $ g3
