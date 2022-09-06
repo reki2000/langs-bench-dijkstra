@@ -1,0 +1,55 @@
+cabal-version:      2.4
+name:               langs-bench-dijkstra
+version:            0.1.0.0
+
+-- A short (one-line) description of the package.
+-- synopsis:
+
+-- A longer description of the package.
+-- description:
+
+-- A URL where users can report bugs.
+-- bug-reports:
+license:            NONE
+author:             reki2000
+maintainer:         2533597+reki2000@users.noreply.github.com
+
+-- A copyright notice.
+-- copyright:
+-- category:
+extra-source-files: CHANGELOG.md
+
+executable main
+    main-is:          Main.hs
+
+    -- Modules included in this executable, other than Main.
+    other-modules:    MapLoader, Graph, Graph.Dijkstra
+
+    -- default-extensions:  Strict StrictData
+    default-extensions:  StrictData
+    -- default-extensions:  Strict
+
+    -- LANGUAGE extensions used by modules in this package.
+    -- other-extensions:
+    build-depends:    base,
+                      containers,
+                      bytestring,
+                      pqueue,
+                      data-vector-growable
+    hs-source-dirs:   app
+    default-language: GHC2021
+
+Test-Suite unit-test
+  Type:                 exitcode-stdio-1.0
+  Hs-Source-Dirs:       test, app
+  other-modules:        MapLoader, Graph
+  Ghc-Options:          -Wall
+  Main-Is:              Spec.hs
+  Build-Depends:        base, 
+                        containers,
+                        bytestring,
+                        data-vector-growable,
+                        hspec-core >=2.1.7,
+                        hspec >=2.1.7,
+                        hspec-expectations >=0.6.1.1
+  Default-Language:     GHC2021

@@ -1,0 +1,4 @@
+dist-newstyle
+bin/
+*.csv
+memo.txt
