@@ -25,7 +25,7 @@ function build {
 if [ -n "$1" ]; then
   langs="$1"
 else
-  langs="cpp go rust javascript julia kotlin python cython pypy dart haskell"
+  langs="cpp go rust javascript julia kotlin python cython pypy dart haskell unregulated-cpp20"
 fi
 
 for lang in $(echo $langs); do
