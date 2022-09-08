@@ -36,7 +36,7 @@ You need running environments for languages below:
 - GCC(g++) : 10 (or versions which support C++20)
 - Dart : 2.16.1
 - Python : 3.10, Cython 0.29, PyPy 3.9-7.3.9
-- Haskell: GHC 9.2.4
+- Haskell: GHC 9.2.4 and GMP
 
 I like using [asdf](https://asdf-vm.com/#/) to set up those environments, except Clang and Haskell.
 
