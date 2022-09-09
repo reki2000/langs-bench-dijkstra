@@ -1,7 +1,8 @@
 'use strict'
 
-import fs from 'node:fs';
-import pq from "./priorityqueue.js";
+const fs = require('fs');
+const readline = require('readline-stream');
+const pq = require('./priorityqueue');
 
 var is_debug = false;
 const DISTANCE_MULTIPLE = 100;
@@ -58,9 +59,9 @@ function stof100(s) {
 	return result;
 }
 
-async function load() {
-	const stream = fs.createReadStream('/dev/stdin', {encoding: 'utf8'});
-	const res = readline.createInterface({input: stream});
+async function load()  {
+	const stream = Bun.stdin.stream();
+	const res = stream.pipe(readline({}));
 
 	var i=1;
 	const p = new Promise((resolve, _) => {
@@ -126,6 +127,7 @@ async function main() {
 	is_debug = process.argv.length > 3 && process.argv[3] == 'debug';
 
 	await load();
+	console.log("loaded nodes:", g.idx);
 
 	let distance = 0, route = [];
 	for (let i = 1; i <= count; i++) {
@@ -141,4 +143,4 @@ async function main() {
 	console.log(line);
 }
 
-await main();
+main();
