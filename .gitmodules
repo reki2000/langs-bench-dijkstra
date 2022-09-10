@@ -28,3 +28,5 @@
 [submodule "unregulated-cpp20/external_projects/core"]
 	path = unregulated-cpp20/external_projects/core
 	url = https://github.com/boostorg/core
+[submodule "submod-repo"]
+	ignore = dirty
