@@ -1,8 +1,6 @@
 'use strict'
 
-const fs = require('fs');
-const readline = require('readline-stream');
-const pq = require('./priorityqueue');
+import pq from './priorityqueue';
 
 var is_debug = false;
 const DISTANCE_MULTIPLE = 100;
@@ -60,25 +58,18 @@ function stof100(s) {
 }
 
 async function load()  {
-	const stream = Bun.stdin.stream();
-	const res = stream.pipe(readline({}));
-
 	var i=1;
-	const p = new Promise((resolve, _) => {
-		res.on('line', (line) => {
-			if (i !== 1 && line !== '') {
-				const field = line.split(',');
-				const s = parseInt(field[2]);
-				const e = parseInt(field[3]);
-				const d = stof100(field[5]);
-				if (is_debug) console.log("line:", line, "s:", s, "e:", e, "D:", d);
-				add_edge(s, e, d);
-			}
-			i++;
-		});
-		res.on('close', resolve);
-	});
-	return p;
+	for await (const line of console) {
+		if (i !== 1 && line !== '') {
+			const field = line.split(',');
+			const s = parseInt(field[2]);
+			const e = parseInt(field[3]);
+			const d = stof100(field[5]);
+			if (is_debug) console.log("line:", line, "s:", s, "e:", e, "D:", d);
+			add_edge(s, e, d);
+		}
+		i++;
+	}
 }
 
 function dijkstra(start , end ) {
