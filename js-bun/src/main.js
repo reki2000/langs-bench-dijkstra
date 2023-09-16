@@ -59,7 +59,8 @@ function stof100(s) {
 
 async function load()  {
 	var i=1;
-	for await (const line of console) {
+	for await (const lineWithLf of console) {
+		const line = lineWithLf.trim();
 		if (i !== 1 && line !== '') {
 			const field = line.split(',');
 			const s = parseInt(field[2]);

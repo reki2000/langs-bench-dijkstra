@@ -133,7 +133,7 @@ for all languages
 
 for specific language
 ```sh
-./run.sh [cpp|go|rust|javascript|julia|kotlin|python|cython|pypy|dart|haskell|unregulated-cpp20]
+./run.sh [cpp|go|rust|javascript|js-bun|julia|kotlin|python|cython|pypy|dart|haskell|unregulated-cpp20]
 ```
 
 for test setup - choose one implementation (ex.`go`) to make a 'correct' result.
@@ -145,5 +145,5 @@ mv out/cpp.txt out/expected.txt
 
 for test
 ```
-./test.sh [cpp|go|rust|javascript|julia|kotlin|python|cython|pypy|dart|haskell|unregulated-cpp20]
+./test.sh [cpp|go|rust|javascript|js-bun|julia|kotlin|python|cython|pypy|dart|haskell|unregulated-cpp20]
 ```
