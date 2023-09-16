@@ -1,0 +1,7 @@
+{
+  "name": "langs-bench-dijkstra",
+  "description": "",
+  "license": "MIT",
+  "version": "1.0.0",
+  "main": "src/main.js"
+}

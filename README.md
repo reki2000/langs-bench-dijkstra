@@ -69,7 +69,7 @@ pip install numpy matplotlib
 You need running environments for languages below:
 - Go : 1.18
 - Rust : 1.62
-- JavaScript : NodeJS 18
+- JavaScript : NodeJS 18, bun 1.0.1
 - Kotlin : 1.7 + jdk >= 18
 - Julia : 1.7
 - Clang : 7 (or versions which support C++17)
@@ -94,6 +94,7 @@ kotlin kotlin
 rust rust
 julia julia
 javascript nodejs
+js-bun bun
 dart dart
 EOT
 asdf reshim
@@ -132,7 +133,7 @@ for all languages
 
 for specific language
 ```sh
-./run.sh [cpp|go|rust|javascript|julia|kotlin|python|cython|pypy|dart|haskell|unregulated-cpp20]
+./run.sh [cpp|go|rust|javascript|js-bun|julia|kotlin|python|cython|pypy|dart|haskell|unregulated-cpp20]
 ```
 
 for test setup - choose one implementation (ex.`go`) to make a 'correct' result.
@@ -144,5 +145,5 @@ mv out/cpp.txt out/expected.txt
 
 for test
 ```
-./test.sh [cpp|go|rust|javascript|julia|kotlin|python|cython|pypy|dart|haskell|unregulated-cpp20]
+./test.sh [cpp|go|rust|javascript|js-bun|julia|kotlin|python|cython|pypy|dart|haskell|unregulated-cpp20]
 ```
