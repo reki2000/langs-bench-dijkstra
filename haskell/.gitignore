@@ -1,4 +1,4 @@
 dist-newstyle
-bin
+bin/
 *.csv
 memo.txt
