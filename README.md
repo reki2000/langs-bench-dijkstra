@@ -77,6 +77,7 @@ You need running environments for languages below:
 - Dart : 2.16.1
 - Python : 3.10, Cython 0.29, PyPy 3.9-7.3.9
 - Haskell: GHC 9.2.4 ,[some libs like GMP](https://github.com/haskell/ghcup/tree/master/.requirements/ghc)
+- Ruby :  3.4.2
 
 I like using [asdf](https://asdf-vm.com/#/) to set up those environments, except Clang and Haskell.
 
@@ -96,6 +97,7 @@ julia julia
 javascript nodejs
 js-bun bun
 dart dart
+ruby ruby
 EOT
 asdf reshim
 ```
@@ -133,7 +135,7 @@ for all languages
 
 for specific language
 ```sh
-./run.sh [cpp|go|rust|javascript|js-bun|julia|kotlin|python|cython|pypy|dart|haskell|unregulated-cpp20]
+./run.sh [cpp|go|rust|javascript|js-bun|julia|kotlin|python|cython|pypy|dart|haskell|ruby|unregulated-cpp20]
 ```
 
 for test setup - choose one implementation (ex.`go`) to make a 'correct' result.
@@ -145,5 +147,5 @@ mv out/cpp.txt out/expected.txt
 
 for test
 ```
-./test.sh [cpp|go|rust|javascript|js-bun|julia|kotlin|python|cython|pypy|dart|haskell|unregulated-cpp20]
+./test.sh [cpp|go|rust|javascript|js-bun|julia|kotlin|python|cython|pypy|dart|haskell|ruby|unregulated-cpp20]
 ```
